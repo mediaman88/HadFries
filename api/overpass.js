@@ -1,4 +1,4 @@
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
 const query = req.query.data;
 if (!query) { res.status(400).json({error:“No query”}); return; }
 try {
