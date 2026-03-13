@@ -249,7 +249,7 @@ function HadFries(){
     if(!userPos)return;
     var cancelled=false;
     setLoading(true);setLoadError(null);
-    var url="https://corsproxy.io/?url=https://overpass-api.de/api/interpreter?data="+encodeURIComponent(buildQuery(userPos.lat,userPos.lng,radius));
+    var url="/api/overpass?data="+encodeURIComponent(buildQuery(userPos.lat,userPos.lng,radius));
     fetch(url)
       .then(function(r){if(!r.ok)throw new Error("Overpass error");return r.json();})
       .then(function(data){
@@ -291,7 +291,7 @@ function HadFries(){
     setPhotoProcessing(true);setPhotoResult(null);
     readExifGPS(file).then(function(gps){
       if(!gps){setPhotoResult({error:"No GPS data found. Make sure location was enabled on your camera."});setPhotoProcessing(false);return;}
-      var url="https://corsproxy.io/?url=https://overpass-api.de/api/interpreter?data="+encodeURIComponent(buildQuery(gps.lat,gps.lng,2));
+      var url="/api/overpass?data="+encodeURIComponent(buildQuery(gps.lat,gps.lng,2));
       fetch(url).then(function(r){return r.json();}).then(function(data){
         var locs=data.elements.map(parseElement).filter(Boolean);
         if(!locs.length){setPhotoResult({error:"No McDonald's found near your photo location."});setPhotoProcessing(false);return;}
