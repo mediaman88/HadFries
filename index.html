@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -128,19 +127,31 @@ window.addEventListener("unhandledrejection",function(e){
 <div id="root"></div>
 <script id="appscript">
 var STORAGE_KEY="hadfries-checkins-v2";
-function loadCheckins(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");}catch(e){return{};}}
-function saveCheckins(d){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}catch(e){}}
+
+function loadCheckins(){
+  try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}");}
+  catch(e){return{};}
+}
+
+function saveCheckins(d){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(d));}
+  catch(e){}
+}
+
 function deg2rad(d){return d*(Math.PI/180);}
+
 function haversine(lat1,lon1,lat2,lon2){
   var R=3958.8,dLat=deg2rad(lat2-lat1),dLon=deg2rad(lon2-lon1);
   var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(deg2rad(lat1))*Math.cos(deg2rad(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
+
 function fmtDist(mi){
   if(mi<0.1)return Math.round(mi*5280)+" ft";
   if(mi<10)return mi.toFixed(1)+" mi";
   return Math.round(mi)+" mi";
 }
+
 function buildQuery(lat,lng,radiusMi){
   var r=Math.round(radiusMi*1609.34);
   var parts=[
@@ -154,21 +165,33 @@ function buildQuery(lat,lng,radiusMi){
   ];
   return parts.join(" ");
 }
+
 function parseElement(el){
   var lat=el.lat||(el.center&&el.center.lat);
   var lng=el.lon||(el.center&&el.center.lon);
-  if(lat == null || lng == null) return null;
+  if(lat==null||lng==null)return null;
   var t=el.tags||{};
   var addr=[t["addr:housenumber"],t["addr:street"]].filter(Boolean).join(" ")||t["addr:full"]||"";
-  return{id:el.type+"-"+el.id,name:t.name||"McDonald's",address:addr,city:t["addr:city"]||"",country:t["addr:country"]||"",lat:lat,lng:lng,hours:t.opening_hours||""};
+  return{
+    id:el.type+"-"+el.id,
+    name:t.name||"McDonald's",
+    address:addr,
+    city:t["addr:city"]||"",
+    country:t["addr:country"]||"",
+    lat:lat,
+    lng:lng,
+    hours:t.opening_hours||""
+  };
 }
+
 function rankLabel(n){
-  if(n===0)return{label:"Fry Rookie",icon:"\uD83E\uDD54"};
-  if(n<5)return{label:"Fry Explorer",icon:"\uD83C\uDF5F"};
-  if(n<15)return{label:"Fry Fanatic",icon:"\uD83D\uDD25"};
-  if(n<30)return{label:"Fry Legend",icon:"\uD83D\uDC51"};
-  return{label:"Fry Deity",icon:"\uD83C\uDFC6"};
+  if(n===0)return{label:"Fry Rookie",icon:"🥔"};
+  if(n<5)return{label:"Fry Explorer",icon:"🍟"};
+  if(n<15)return{label:"Fry Fanatic",icon:"🔥"};
+  if(n<30)return{label:"Fry Legend",icon:"👑"};
+  return{label:"Fry Deity",icon:"🏆"};
 }
+
 function readExifGPS(file){
   return new Promise(function(resolve){
     var reader=new FileReader();
@@ -185,7 +208,10 @@ function readExifGPS(file){
               var to=offset+10,le=view.getUint16(to)===0x4949;
               var ifd0=to+view.getUint32(to+4,le),cnt=view.getUint16(ifd0,le);
               var gpsOff=null;
-              for(var i=0;i<cnt;i++){var eo=ifd0+2+i*12;if(view.getUint16(eo,le)===0x8825)gpsOff=to+view.getUint32(eo+8,le);}
+              for(var i=0;i<cnt;i++){
+                var eo=ifd0+2+i*12;
+                if(view.getUint16(eo,le)===0x8825)gpsOff=to+view.getUint32(eo+8,le);
+              }
               if(!gpsOff){resolve(null);return;}
               var gc=view.getUint16(gpsOff,le),gps={};
               for(var j=0;j<gc;j++){
@@ -201,25 +227,50 @@ function readExifGPS(file){
                 var lat=dms(gps.lat);if(gps.latRef==="S")lat=-lat;
                 var lng=dms(gps.lng);if(gps.lngRef==="W")lng=-lng;
                 resolve({lat:lat,lng:lng});
-              }else resolve(null);
-            }else resolve(null);
+              }else{
+                resolve(null);
+              }
+            }else{
+              resolve(null);
+            }
             return;
           }
           if((marker&0xFF00)!==0xFF00)break;
           offset+=2+view.getUint16(offset+2);
         }
         resolve(null);
-      }catch(err){resolve(null);}
+      }catch(err){
+        resolve(null);
+      }
     };
     reader.readAsArrayBuffer(file);
   });
 }
+
 var AP="m 0,0 c 0,0 -1.385,19.868 -4.368,19.868 -3.515,0 -3.675,-18.696 -3.675,-18.696 l -3.276,-0.027 c 0,0 -0.16,18.696 -3.675,18.696 -2.983,0 -4.368,-19.868 -4.368,-19.868 l -3.209,0.014 c 0,0 2.156,21.633 7.763,21.66 3.689,0.018 5.113,-9.317 5.113,-9.317 0,0 2.145,9.335 4.915,9.335 6.658,0 7.989,-21.678 7.989,-21.678 L 0,0 Z";
 var h=React.createElement;
-function Arches(p){var w=p.width||42;return h("svg",{width:w,height:w*0.67,viewBox:"-1092 -1456 3246 2174"},h("g",{transform:"matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)"},h("path",{d:AP,fill:"#FFC72C"})));}
-function ArchesOutline(p){var w=p.width||22;return h("svg",{width:w,height:w*0.67,viewBox:"-1092 -1456 3246 2174"},h("g",{transform:"matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)"},h("path",{d:AP,fill:"#FFC72C",stroke:"#27251F",strokeWidth:"0.15"})));}
+
+function Arches(p){
+  var w=p.width||42;
+  return h("svg",{width:w,height:w*0.67,viewBox:"-1092 -1456 3246 2174"},
+    h("g",{transform:"matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)"},
+      h("path",{d:AP,fill:"#FFC72C"})
+    )
+  );
+}
+
+function ArchesOutline(p){
+  var w=p.width||22;
+  return h("svg",{width:w,height:w*0.67,viewBox:"-1092 -1456 3246 2174"},
+    h("g",{transform:"matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)"},
+      h("path",{d:AP,fill:"#FFC72C",stroke:"#27251F",strokeWidth:"0.15"})
+    )
+  );
+}
+
 function HadFries(){
   var useState=React.useState,useEffect=React.useEffect,useRef=React.useRef,useCallback=React.useCallback;
+
   var s=useState(loadCheckins),checkins=s[0],setCheckins=s[1];
   var s2=useState([]),locations=s2[0],setLocations=s2[1];
   var s3=useState(false),loading=s3[0],setLoading=s3[1];
@@ -233,291 +284,442 @@ function HadFries(){
   var s11=useState(null),celebrating=s11[0],setCelebrating=s11[1];
   var s12=useState(false),photoProcessing=s12[0],setPhotoProcessing=s12[1];
   var s13=useState(null),photoResult=s13[0],setPhotoResult=s13[1];
+
   var toastRef=useRef(null);
   var photoInputRef=useRef(null);
+
   useEffect(function(){saveCheckins(checkins);},[checkins]);
-var requestGeo=useCallback(function(){
-  if (!window.isSecureContext) {
-    setLoadError("Location requires HTTPS.");
-    setGeoStatus("denied");
-    return;
-  }
 
-  if (!navigator.geolocation) {
-    setLoadError("Geolocation is not supported by this browser.");
-    setGeoStatus("denied");
-    return;
-  }
-
-  setLoadError(null);
-  setGeoStatus("loading");
-
-  navigator.geolocation.getCurrentPosition(
-    function(pos){
-      setUserPos({
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude
-      });
-      setGeoStatus("ok");
-    },
-    function(err){
-      var msg = "Could not get your location.";
-      if (err && err.code === 1) msg = "Location permission was denied.";
-      if (err && err.code === 2) msg = "Location unavailable. Check device location services.";
-      if (err && err.code === 3) msg = "Location request timed out.";
-
-      setLoadError(msg);
+  var requestGeo=useCallback(function(){
+    if(!window.isSecureContext){
+      setLoadError("Location requires HTTPS.");
       setGeoStatus("denied");
-    },
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0
+      return;
     }
-  );
-},[]);
-function fetchLocations(lat, lng, radiusMi) {
-  setLoading(true);
-  setLoadError(null);
 
-  var url = "/api/overpass?data=" + encodeURIComponent(buildQuery(lat, lng, radiusMi));
+    if(!navigator.geolocation){
+      setLoadError("Geolocation is not supported by this browser.");
+      setGeoStatus("denied");
+      return;
+    }
 
-  return fetch(url)
-    .then(function(r){
-      return r.text().then(function(text){
-        if (!r.ok) {
-          throw new Error(text || ("Overpass error " + r.status));
-        }
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          throw new Error("Invalid response from Overpass.");
-        }
+    setLoadError(null);
+    setGeoStatus("loading");
+
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        setUserPos({
+          lat:pos.coords.latitude,
+          lng:pos.coords.longitude
+        });
+        setGeoStatus("ok");
+      },
+      function(err){
+        var msg="Could not get your location.";
+        if(err&&err.code===1)msg="Location permission was denied.";
+        if(err&&err.code===2)msg="Location unavailable. Check device location services.";
+        if(err&&err.code===3)msg="Location request timed out.";
+        setLoadError(msg);
+        setGeoStatus("denied");
+      },
+      {
+        enableHighAccuracy:true,
+        timeout:15000,
+        maximumAge:0
+      }
+    );
+  },[]);
+
+  function fetchLocations(lat,lng,radiusMi){
+    setLoading(true);
+    setLoadError(null);
+
+    var url="/api/overpass?data="+encodeURIComponent(buildQuery(lat,lng,radiusMi));
+
+    return fetch(url)
+      .then(function(r){
+        return r.text().then(function(text){
+          if(!r.ok){
+            throw new Error(text||("Overpass error "+r.status));
+          }
+          try{
+            return JSON.parse(text);
+          }catch(e){
+            throw new Error("Invalid response from Overpass.");
+          }
+        });
+      })
+      .then(function(data){
+        var seen={};
+        var locs=(data.elements||[]).map(parseElement).filter(Boolean).filter(function(l){
+          var k=l.lat.toFixed(4)+","+l.lng.toFixed(4);
+          if(seen[k])return false;
+          seen[k]=true;
+          return true;
+        });
+        setLocations(locs);
+        setLoading(false);
+      })
+      .catch(function(e){
+        setLoadError(e.message||"Could not load locations.");
+        setLoading(false);
       });
-    })
-    .then(function(data){
-      var seen = {};
-      var locs = (data.elements || []).map(parseElement).filter(Boolean).filter(function(l){
-        var k = l.lat.toFixed(4) + "," + l.lng.toFixed(4);
-        if (seen[k]) return false;
-        seen[k] = true;
-        return true;
+  }
+
+  useEffect(function(){
+    if(!userPos)return;
+    var cancelled=false;
+
+    setLoading(true);
+    setLoadError(null);
+
+    var url="/api/overpass?data="+encodeURIComponent(buildQuery(userPos.lat,userPos.lng,radius));
+
+    fetch(url)
+      .then(function(r){
+        return r.text().then(function(text){
+          if(!r.ok){
+            throw new Error(text||("Overpass error "+r.status));
+          }
+          try{
+            return JSON.parse(text);
+          }catch(e){
+            throw new Error("Invalid response from Overpass.");
+          }
+        });
+      })
+      .then(function(data){
+        if(cancelled)return;
+
+        var seen={};
+        var locs=(data.elements||[]).map(parseElement).filter(Boolean).filter(function(l){
+          var k=l.lat.toFixed(4)+","+l.lng.toFixed(4);
+          if(seen[k])return false;
+          seen[k]=true;
+          return true;
+        });
+
+        setLocations(locs);
+        setLoading(false);
+      })
+      .catch(function(e){
+        if(cancelled)return;
+        setLoadError(e.message||"Could not load locations.");
+        setLoading(false);
       });
-      setLocations(locs);
-      setLoading(false);
-    })
-    .catch(function(e){
-      setLoadError(e.message || "Could not load locations.");
-      setLoading(false);
+
+    return function(){
+      cancelled=true;
+    };
+  },[userPos,radius]);
+
+  var withDist=locations.map(function(l){
+    return Object.assign({},l,{
+      dist:userPos?haversine(userPos.lat,userPos.lng,l.lat,l.lng):null
     });
-}
+  }).sort(function(a,b){
+    return (a.dist||9999)-(b.dist||9999);
+  });
 
-useEffect(function(){
-  if (!userPos) return;
-  var cancelled = false;
-
-  setLoading(true);
-  setLoadError(null);
-
-  var url = "/api/overpass?data=" + encodeURIComponent(buildQuery(userPos.lat, userPos.lng, radius));
-
-  fetch(url)
-    .then(function(r){
-      return r.text().then(function(text){
-        if (!r.ok) {
-          throw new Error(text || ("Overpass error " + r.status));
-        }
-        try {
-          return JSON.parse(text);
-        } catch (e) {
-          throw new Error("Invalid response from Overpass.");
-        }
-      });
-    })
-    .then(function(data){
-      if (cancelled) return;
-
-      var seen = {};
-      var locs = (data.elements || []).map(parseElement).filter(Boolean).filter(function(l){
-        var k = l.lat.toFixed(4) + "," + l.lng.toFixed(4);
-        if (seen[k]) return false;
-        seen[k] = true;
-        return true;
-      });
-
-      setLocations(locs);
-      setLoading(false);
-    })
-    .catch(function(e){
-      if (cancelled) return;
-      setLoadError(e.message || "Could not load locations.");
-      setLoading(false);
-    });
-
-  return function(){
-    cancelled = true;
-  };
-},[userPos, radius]);
-  var withDist=locations.map(function(l){return Object.assign({},l,{dist:userPos?haversine(userPos.lat,userPos.lng,l.lat,l.lng):null});}).sort(function(a,b){return(a.dist||9999)-(b.dist||9999);});
   var filtered=withDist.filter(function(l){
     if(!search)return true;
     var q=search.toLowerCase();
-    return l.name.toLowerCase().indexOf(q)!==-1||l.address.toLowerCase().indexOf(q)!==-1||l.city.toLowerCase().indexOf(q)!==-1;
+    return l.name.toLowerCase().indexOf(q)!==-1||
+           l.address.toLowerCase().indexOf(q)!==-1||
+           l.city.toLowerCase().indexOf(q)!==-1;
   });
+
   function showToast(msg,type){
     if(toastRef.current)clearTimeout(toastRef.current);
     setToast({msg:msg,type:type||"success"});
     toastRef.current=setTimeout(function(){setToast(null);},2800);
   }
+
   function handleCheckin(loc){
     if(checkins[loc.id]){
-      setCheckins(function(prev){var n=Object.assign({},prev);delete n[loc.id];return n;});
+      setCheckins(function(prev){
+        var n=Object.assign({},prev);
+        delete n[loc.id];
+        return n;
+      });
       showToast("Removed check-in","remove");
     }else{
-      setCheckins(function(prev){var n=Object.assign({},prev);n[loc.id]={date:new Date().toISOString(),name:loc.name,city:loc.city,address:loc.address,country:loc.country};return n;});
-      setCelebrating(loc.id);setTimeout(function(){setCelebrating(null);},1200);
-      showToast("\uD83C\uDF5F Had Fries here!");
+      setCheckins(function(prev){
+        var n=Object.assign({},prev);
+        n[loc.id]={
+          date:new Date().toISOString(),
+          name:loc.name,
+          city:loc.city,
+          address:loc.address,
+          country:loc.country
+        };
+        return n;
+      });
+      setCelebrating(loc.id);
+      setTimeout(function(){setCelebrating(null);},1200);
+      showToast("🍟 Had Fries here!");
     }
   }
-  function handlePhotoUpload(e){   var file=e.target.files&&e.target.files[0];   if(!file)return;   setPhotoProcessing(true);setPhotoResult(null);   readExifGPS(file).then(function(gps){     if(!gps){setPhotoResult({error:"No GPS data found. Make sure location was enabled on your camera."});setPhotoProcessing(false);return;}     var url="/api/overpass?data="+encodeURIComponent(buildQuery(gps.lat,gps.lng,2));     fetch(url)       .then(function(r){         return r.text().then(function(text){           if(!r.ok){             throw new Error(text || ("Overpass error " + r.status));           }           try{             return JSON.parse(text);           }catch(e){             throw new Error("Invalid response from Overpass.");           }         });       })       .then(function(data){         var locs=(data.elements||[]).map(parseElement).filter(Boolean);         if(!locs.length){setPhotoResult({error:"No McDonald's found near your photo location."});setPhotoProcessing(false);return;}         var closest=locs.map(function(l){return Object.assign({},l,{dist:haversine(gps.lat,gps.lng,l.lat,l.lng)});}).sort(function(a,b){return a.dist-b.dist;})[0];         setPhotoResult({loc:closest,gps:gps});setPhotoProcessing(false);       })       .catch(function(e){         setPhotoResult({error:e.message || "Could not look up location. Check your connection."});         setPhotoProcessing(false);       });     e.target.value="";   }); }
+
+  function handlePhotoUpload(e){
     var file=e.target.files&&e.target.files[0];
     if(!file)return;
-    setPhotoProcessing(true);setPhotoResult(null);
+
+    setPhotoProcessing(true);
+    setPhotoResult(null);
+
     readExifGPS(file).then(function(gps){
-      if(!gps){setPhotoResult({error:"No GPS data found. Make sure location was enabled on your camera."});setPhotoProcessing(false);return;}
+      if(!gps){
+        setPhotoResult({error:"No GPS data found. Make sure location was enabled on your camera."});
+        setPhotoProcessing(false);
+        return;
+      }
+
       var url="/api/overpass?data="+encodeURIComponent(buildQuery(gps.lat,gps.lng,2));
-      fetch(url).then(function(r){return r.json();}).then(function(data){
-        var locs=data.elements.map(parseElement).filter(Boolean);
-        if(!locs.length){setPhotoResult({error:"No McDonald's found near your photo location."});setPhotoProcessing(false);return;}
-        var closest=locs.map(function(l){return Object.assign({},l,{dist:haversine(gps.lat,gps.lng,l.lat,l.lng)});}).sort(function(a,b){return a.dist-b.dist;})[0];
-        setPhotoResult({loc:closest,gps:gps});setPhotoProcessing(false);
-      }).catch(function(){setPhotoResult({error:"Could not look up location. Check your connection."});setPhotoProcessing(false);});
+
+      fetch(url)
+        .then(function(r){
+          return r.text().then(function(text){
+            if(!r.ok){
+              throw new Error(text||("Overpass error "+r.status));
+            }
+            try{
+              return JSON.parse(text);
+            }catch(err){
+              throw new Error("Invalid response from Overpass.");
+            }
+          });
+        })
+        .then(function(data){
+          var locs=(data.elements||[]).map(parseElement).filter(Boolean);
+
+          if(!locs.length){
+            setPhotoResult({error:"No McDonald's found near your photo location."});
+            setPhotoProcessing(false);
+            return;
+          }
+
+          var closest=locs.map(function(l){
+            return Object.assign({},l,{
+              dist:haversine(gps.lat,gps.lng,l.lat,l.lng)
+            });
+          }).sort(function(a,b){
+            return a.dist-b.dist;
+          })[0];
+
+          setPhotoResult({loc:closest,gps:gps});
+          setPhotoProcessing(false);
+        })
+        .catch(function(err){
+          setPhotoResult({error:err.message||"Could not look up location. Check your connection."});
+          setPhotoProcessing(false);
+        });
+
       e.target.value="";
     });
   }
+
   function confirmPhotoCheckin(loc){
     if(!checkins[loc.id]){
-      setCheckins(function(prev){var n=Object.assign({},prev);n[loc.id]={date:new Date().toISOString(),name:loc.name,city:loc.city,address:loc.address,country:loc.country};return n;});
-      setCelebrating(loc.id);setTimeout(function(){setCelebrating(null);},1200);
-      showToast("\uD83D\uDCF8 Photo check-in: "+loc.name+"!");
+      setCheckins(function(prev){
+        var n=Object.assign({},prev);
+        n[loc.id]={
+          date:new Date().toISOString(),
+          name:loc.name,
+          city:loc.city,
+          address:loc.address,
+          country:loc.country
+        };
+        return n;
+      });
+      setCelebrating(loc.id);
+      setTimeout(function(){setCelebrating(null);},1200);
+      showToast("📸 Photo check-in: "+loc.name+"!");
     }
     setPhotoResult(null);
   }
+
   var totalCheckins=Object.keys(checkins).length;
   var rank=rankLabel(totalCheckins);
+
   return h("div",{style:{fontFamily:"'Nunito',sans-serif",background:"#FFC72C",minHeight:"100vh",color:"#27251F"}},
     h("div",{className:"hf-header"},
       h("div",{className:"hf-header-inner"},
         h("div",{className:"hf-logo"},
           h(Arches,{width:42}),
-          h("div",null,h("div",{className:"hf-title"},"Had Fries"),h("div",{className:"hf-sub"},"World Fry Tracker"),h("div",{className:"hf-disclaimer"},"Fan app \u00B7 Not affiliated with McDonald's Corporation"))
+          h("div",null,
+            h("div",{className:"hf-title"},"Had Fries"),
+            h("div",{className:"hf-sub"},"World Fry Tracker"),
+            h("div",{className:"hf-disclaimer"},"Fan app · Not affiliated with McDonald's Corporation")
+          )
         ),
-        h("div",{className:"hf-badge"},h("div",{className:"hf-badge-num"},totalCheckins),h("div",{className:"hf-badge-lbl"},"Check-ins"))
+        h("div",{className:"hf-badge"},
+          h("div",{className:"hf-badge-num"},totalCheckins),
+          h("div",{className:"hf-badge-lbl"},"Check-ins")
+        )
       ),
-      h("div",{className:"hf-nav"},h("div",{className:"hf-nav-inner"},
-        h("button",{className:"hf-nav-btn"+(view==="nearby"?" active":""),onClick:function(){setView("nearby");}},"\uD83D\uDCCD Nearby"),
-        h("button",{className:"hf-nav-btn"+(view==="all"?" active":""),onClick:function(){setView("all");}},"\uD83D\uDCCB All"),
-        h("button",{className:"hf-nav-btn"+(view==="stats"?" active":""),onClick:function(){setView("stats");}},"\uD83D\uDCCA Stats")
-      ))
+      h("div",{className:"hf-nav"},
+        h("div",{className:"hf-nav-inner"},
+          h("button",{className:"hf-nav-btn"+(view==="nearby"?" active":""),onClick:function(){setView("nearby");}},"📍 Nearby"),
+          h("button",{className:"hf-nav-btn"+(view==="all"?" active":""),onClick:function(){setView("all");}},"📋 All"),
+          h("button",{className:"hf-nav-btn"+(view==="stats"?" active":""),onClick:function(){setView("stats");}},"📊 Stats")
+        )
+      )
     ),
-    h("div",{className:"hf-photo-bar"},h("div",{className:"hf-photo-bar-inner"},
-      h("button",{className:"hf-photo-btn",onClick:function(){photoInputRef.current&&photoInputRef.current.click();}},"\uD83D\uDCF8 Photo Check-in"),
-      h("input",{ref:photoInputRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handlePhotoUpload}),
-      h("span",{className:"hf-photo-hint"},"Upload a McDonald's photo to auto check-in by GPS")
-    )),
-    geoStatus==="prompt"&&view!=="stats"&&h("div",{className:"hf-geo-banner"},h("div",{className:"hf-geo-card"},
-      h("div",{className:"hf-geo-icon"},"\uD83C\uDF5F"),
-      h("div",{className:"hf-geo-title"},"Find McDonald's Near You"),
-      h("div",{className:"hf-geo-desc"},"Tap below to find nearby locations. No location is shared until you tap."),
-      h("button",{className:"hf-btn-red",onClick:requestGeo},"\uD83D\uDCCD Use My Location")
-    )),
-    geoStatus==="loading"&&view!=="stats"&&h("div",{className:"hf-loading",style:{marginTop:40}},h("div",{className:"hf-spinner"}),h("div",{className:"hf-loading-txt"},"Getting your location...")),
-    geoStatus==="denied"&&view!=="stats"&&h("div",{className:"hf-geo-banner"},h("div",{className:"hf-geo-card"},
-      h("div",{className:"hf-geo-icon"},"\uD83D\uDEAB"),
-      h("div",{className:"hf-geo-title"},"Location Access Denied"),
-      h("div",{className:"hf-geo-desc"},"Please enable location permissions in your browser settings, then tap retry."),
-      h("button",{className:"hf-btn-red",onClick:requestGeo},"Retry")
-    )),
-    geoStatus==="ok"&&view!=="stats"&&h("div",{className:"hf-controls"},h("div",{className:"hf-controls-inner"},
-      h("input",{className:"hf-search",placeholder:"Search name or address...",value:search,onChange:function(e){setSearch(e.target.value);}}),
-      view==="nearby"&&h("select",{className:"hf-select",value:radius,onChange:function(e){setRadius(Number(e.target.value));}},
-        [5,10,25,50,100].map(function(r){return h("option",{key:r,value:r},r+" mi radius");})
-      ),
-      h("button",{className:"hf-geo-pill",onClick:requestGeo},h("span",{className:"hf-geo-dot"})," Update Location")
-    )),
-    photoProcessing&&h("div",{className:"hf-loading",style:{marginTop:20}},h("div",{className:"hf-spinner"}),h("div",{className:"hf-loading-txt"},"\uD83D\uDCF8 Reading photo location...")),
+
+    h("div",{className:"hf-photo-bar"},
+      h("div",{className:"hf-photo-bar-inner"},
+        h("button",{className:"hf-photo-btn",onClick:function(){photoInputRef.current&&photoInputRef.current.click();}},"📸 Photo Check-in"),
+        h("input",{ref:photoInputRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handlePhotoUpload}),
+        h("span",{className:"hf-photo-hint"},"Upload a McDonald's photo to auto check-in by GPS")
+      )
+    ),
+
+    geoStatus==="prompt"&&view!=="stats"&&h("div",{className:"hf-geo-banner"},
+      h("div",{className:"hf-geo-card"},
+        h("div",{className:"hf-geo-icon"},"🍟"),
+        h("div",{className:"hf-geo-title"},"Find McDonald's Near You"),
+        h("div",{className:"hf-geo-desc"},"Tap below to find nearby locations. No location is shared until you tap."),
+        h("button",{className:"hf-btn-red",onClick:requestGeo},"📍 Use My Location")
+      )
+    ),
+
+    geoStatus==="loading"&&view!=="stats"&&h("div",{className:"hf-loading",style:{marginTop:40}},
+      h("div",{className:"hf-spinner"}),
+      h("div",{className:"hf-loading-txt"},"Getting your location...")
+    ),
+
+    geoStatus==="denied"&&view!=="stats"&&h("div",{className:"hf-geo-banner"},
+      h("div",{className:"hf-geo-card"},
+        h("div",{className:"hf-geo-icon"},"🚫"),
+        h("div",{className:"hf-geo-title"},"Location Access Denied"),
+        h("div",{className:"hf-geo-desc"},"Please enable location permissions in your browser settings, then tap retry."),
+        h("button",{className:"hf-btn-red",onClick:requestGeo},"Retry")
+      )
+    ),
+
+    geoStatus==="ok"&&view!=="stats"&&h("div",{className:"hf-controls"},
+      h("div",{className:"hf-controls-inner"},
+        h("input",{className:"hf-search",placeholder:"Search name or address...",value:search,onChange:function(e){setSearch(e.target.value);}}),
+        view==="nearby"&&h("select",{className:"hf-select",value:radius,onChange:function(e){setRadius(Number(e.target.value));}},
+          [5,10,25,50,100].map(function(r){return h("option",{key:r,value:r},r+" mi radius");})
+        ),
+        h("button",{className:"hf-geo-pill",onClick:requestGeo},
+          h("span",{className:"hf-geo-dot"}),
+          " Update Location"
+        )
+      )
+    ),
+
+    photoProcessing&&h("div",{className:"hf-loading",style:{marginTop:20}},
+      h("div",{className:"hf-spinner"}),
+      h("div",{className:"hf-loading-txt"},"📸 Reading photo location...")
+    ),
+
     photoResult&&h("div",{className:"hf-modal-overlay",onClick:function(){setPhotoResult(null);}},
       h("div",{className:"hf-modal",onClick:function(e){e.stopPropagation();}},
         photoResult.error
-          ?h(React.Fragment,null,h("div",{className:"hf-modal-icon"},"\uD83D\uDE15"),h("div",{className:"hf-modal-title"},"Couldn't Find Location"),h("div",{className:"hf-modal-desc"},photoResult.error),h("button",{className:"hf-btn-red",onClick:function(){setPhotoResult(null);}},"OK"))
+          ?h(React.Fragment,null,
+              h("div",{className:"hf-modal-icon"},"😕"),
+              h("div",{className:"hf-modal-title"},"Couldn't Find Location"),
+              h("div",{className:"hf-modal-desc"},photoResult.error),
+              h("button",{className:"hf-btn-red",onClick:function(){setPhotoResult(null);}},"OK")
+            )
           :h(React.Fragment,null,
-              h("div",{className:"hf-modal-icon"},"\uD83D\uDCCD"),
+              h("div",{className:"hf-modal-icon"},"📍"),
               h("div",{className:"hf-modal-title"},"Found It!"),
               h("div",{className:"hf-modal-desc"},"Your photo was taken near this location:"),
               h("div",{className:"hf-modal-loc"},
                 h("div",{className:"hf-modal-loc-name"},photoResult.loc.name),
-                h("div",{className:"hf-modal-loc-addr"},[photoResult.loc.address,photoResult.loc.city].filter(Boolean).join(" \u00B7 ")||"McDonald's location"),
-                h("div",{className:"hf-modal-loc-dist"},"\uD83D\uDCCD "+fmtDist(photoResult.loc.dist)+" from photo GPS")
+                h("div",{className:"hf-modal-loc-addr"},[photoResult.loc.address,photoResult.loc.city].filter(Boolean).join(" · ")||"McDonald's location"),
+                h("div",{className:"hf-modal-loc-dist"},"📍 "+fmtDist(photoResult.loc.dist)+" from photo GPS")
               ),
               checkins[photoResult.loc.id]
-                ?h(React.Fragment,null,h("div",{style:{color:"#DA0023",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",marginBottom:14}},"\uD83C\uDF5F Already checked in!"),h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Close"))
-                :h("div",{className:"hf-modal-btns"},h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Cancel"),h("button",{className:"hf-btn-red",onClick:function(){confirmPhotoCheckin(photoResult.loc);}},"\u2713 Check In!"))
+                ?h(React.Fragment,null,
+                    h("div",{style:{color:"#DA0023",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",marginBottom:14}},"🍟 Already checked in!"),
+                    h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Close")
+                  )
+                :h("div",{className:"hf-modal-btns"},
+                    h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Cancel"),
+                    h("button",{className:"hf-btn-red",onClick:function(){confirmPhotoCheckin(photoResult.loc);}},"✓ Check In!")
+                  )
             )
       )
     ),
-    loading&&geoStatus==="ok"&&view!=="stats"&&h("div",{className:"hf-loading",style:{marginTop:40}},h("div",{className:"hf-spinner"}),h("div",{className:"hf-loading-txt"},"Loading from OpenStreetMap...")),
+
+    loading&&geoStatus==="ok"&&view!=="stats"&&h("div",{className:"hf-loading",style:{marginTop:40}},
+      h("div",{className:"hf-spinner"}),
+      h("div",{className:"hf-loading-txt"},"Loading from OpenStreetMap...")
+    ),
+
     loadError&&!loading&&h("div",{style:{maxWidth:900,margin:"20px auto",padding:"0 16px"}},
       h("div",{style:{background:"white",border:"3px solid #DA0023",borderRadius:12,padding:20,textAlign:"center"}},
-        h("div",{style:{fontSize:"1.5rem",marginBottom:8}},"\u26A0\uFE0F"),
+        h("div",{style:{fontSize:"1.5rem",marginBottom:8}},"⚠️"),
         h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"0.9rem",marginBottom:6}},"Couldn't load locations"),
-        h("div",{style:{fontSize:"0.8rem",color:"#666",marginBottom:14}},loadError || "Something went wrong. Try again."),
+        h("div",{style:{fontSize:"0.8rem",color:"#666",marginBottom:14}},loadError||"Something went wrong. Try again."),
         h("button",{
-  className:"hf-btn-red",
-  onClick:function(){
-    if (userPos) {
-      fetchLocations(userPos.lat, userPos.lng, radius);
-    } else {
-      requestGeo();
-    }
-  }
-},"Retry")
+          className:"hf-btn-red",
+          onClick:function(){
+            if(userPos){
+              fetchLocations(userPos.lat,userPos.lng,radius);
+            }else{
+              requestGeo();
+            }
+          }
+        },"Retry")
       )
     ),
+
     view==="nearby"&&geoStatus==="ok"&&!loading&&!loadError&&h(React.Fragment,null,
       filtered.length>0&&h("div",{className:"hf-result-count"},filtered.length+" location"+(filtered.length!==1?"s":"")+" found within "+radius+" miles"),
       h("div",{className:"hf-grid"},
         filtered.length===0
-          ?h("div",{className:"hf-empty"},"No locations found nearby \uD83C\uDF5F")
+          ?h("div",{className:"hf-empty"},"No locations found nearby 🍟")
           :filtered.map(function(loc){
+              var isChecked=!!checkins[loc.id];
+              return h("div",{key:loc.id,className:"hf-card"+(isChecked?" checked":"")+(celebrating===loc.id?" celebrating":"")},
+                isChecked&&h("div",{className:"hf-stamp"},"🍟"),
+                h("div",{className:"hf-card-top"},
+                  h("div",{style:{flexShrink:0,display:"flex",alignItems:"center"}},h(Arches,{width:28})),
+                  h("div",{className:"hf-card-loc-info"},
+                    h("div",{className:"hf-card-name"},loc.name),
+                    h("div",{className:"hf-card-addr"},loc.address||loc.city||"McDonald's location")
+                  ),
+                  loc.dist!==null&&h("div",{className:"hf-dist-pill"},fmtDist(loc.dist))
+                ),
+                h("div",{className:"hf-card-bottom"},
+                  h("div",{className:"hf-card-meta"},
+                    loc.city&&h("div",null,loc.city),
+                    loc.hours&&h("div",{style:{color:"#4ade80",fontSize:"0.67rem"}},"⏰ "+(loc.hours.length>30?loc.hours.slice(0,30)+"…":loc.hours))
+                  ),
+                  h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),onClick:function(){handleCheckin(loc);}},
+                    isChecked?"✓ Had Fries!":"Had Fries?"
+                  )
+                )
+              );
+            })
+      )
+    ),
+
+    view==="all"&&geoStatus==="ok"&&!loading&&!loadError&&h("div",{className:"hf-list"},
+      filtered.length===0
+        ?h("div",{style:{textAlign:"center",padding:40,fontFamily:"'Archivo Black',sans-serif",opacity:0.5}},"No locations found 🍟")
+        :filtered.map(function(loc){
             var isChecked=!!checkins[loc.id];
-            return h("div",{key:loc.id,className:"hf-card"+(isChecked?" checked":"")+(celebrating===loc.id?" celebrating":"")},
-              isChecked&&h("div",{className:"hf-stamp"},"\uD83C\uDF5F"),
-              h("div",{className:"hf-card-top"},
-                h("div",{style:{flexShrink:0,display:"flex",alignItems:"center"}},h(Arches,{width:28})),
-                h("div",{className:"hf-card-loc-info"},h("div",{className:"hf-card-name"},loc.name),h("div",{className:"hf-card-addr"},loc.address||loc.city||"McDonald's location")),
-                loc.dist!==null&&h("div",{className:"hf-dist-pill"},fmtDist(loc.dist))
+            return h("div",{key:loc.id,className:"hf-list-row"+(isChecked?" checked":"")},
+              h(ArchesOutline,{width:22}),
+              h("div",{style:{flex:1,overflow:"hidden"}},
+                h("div",{className:"hf-list-name"},loc.name+(isChecked?" 🍟":"")),
+                h("div",{className:"hf-list-sub"},[loc.address,loc.city].filter(Boolean).join(" · ")||"McDonald's")
               ),
-              h("div",{className:"hf-card-bottom"},
-                h("div",{className:"hf-card-meta"},loc.city&&h("div",null,loc.city),loc.hours&&h("div",{style:{color:"#4ade80",fontSize:"0.67rem"}},"\u23F0 "+(loc.hours.length>30?loc.hours.slice(0,30)+"\u2026":loc.hours))),
-                h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),onClick:function(){handleCheckin(loc);}},isChecked?"\u2713 Had Fries!":"Had Fries?")
+              loc.dist!==null&&h("div",{style:{fontSize:"0.7rem",fontWeight:700,color:"#DA0023",whiteSpace:"nowrap"}},fmtDist(loc.dist)),
+              h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),style:{fontSize:"0.68rem",padding:"6px 11px"},onClick:function(){handleCheckin(loc);}},
+                isChecked?"✓ Done":"+ Check In"
               )
             );
           })
-      )
     ),
-    view==="all"&&geoStatus==="ok"&&!loading&&!loadError&&h("div",{className:"hf-list"},
-      filtered.length===0
-        ?h("div",{style:{textAlign:"center",padding:40,fontFamily:"'Archivo Black',sans-serif",opacity:0.5}},"No locations found \uD83C\uDF5F")
-        :filtered.map(function(loc){
-          var isChecked=!!checkins[loc.id];
-          return h("div",{key:loc.id,className:"hf-list-row"+(isChecked?" checked":"")},
-            h(ArchesOutline,{width:22}),
-            h("div",{style:{flex:1,overflow:"hidden"}},h("div",{className:"hf-list-name"},loc.name+(isChecked?" \uD83C\uDF5F":"")),h("div",{className:"hf-list-sub"},[loc.address,loc.city].filter(Boolean).join(" \u00B7 ")||"McDonald's")),
-            loc.dist!==null&&h("div",{style:{fontSize:"0.7rem",fontWeight:700,color:"#DA0023",whiteSpace:"nowrap"}},fmtDist(loc.dist)),
-            h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),style:{fontSize:"0.68rem",padding:"6px 11px"},onClick:function(){handleCheckin(loc);}},isChecked?"\u2713 Done":"+ Check In")
-          );
-        })
-    ),
+
     view==="stats"&&h("div",{className:"hf-stats"},
       h("div",{className:"hf-stats-hero"},
         h("div",{className:"hf-stats-big"},totalCheckins),
@@ -525,25 +727,37 @@ useEffect(function(){
         h("div",{className:"hf-stats-rank"},h("span",{className:"hf-rank-chip"},rank.icon+" "+rank.label))
       ),
       h("div",{className:"hf-sgrid"},
-        [{val:totalCheckins,lbl:"Check-ins"},{val:new Set(Object.values(checkins).map(function(c){return c.country;}).filter(Boolean)).size,lbl:"Countries"},{val:totalCheckins>0?Math.round((Date.now()-new Date(Object.values(checkins).sort(function(a,b){return new Date(a.date)-new Date(b.date);})[0].date).getTime())/86400000):0,lbl:"Days Active"},{val:rank.icon,lbl:rank.label}]
-        .map(function(s){return h("div",{key:s.lbl,className:"hf-scard"},h("div",{className:"hf-sval"},s.val),h("div",{className:"hf-slbl"},s.lbl));})
+        [
+          {val:totalCheckins,lbl:"Check-ins"},
+          {val:new Set(Object.values(checkins).map(function(c){return c.country;}).filter(Boolean)).size,lbl:"Countries"},
+          {val:totalCheckins>0?Math.round((Date.now()-new Date(Object.values(checkins).sort(function(a,b){return new Date(a.date)-new Date(b.date);})[0].date).getTime())/86400000):0,lbl:"Days Active"},
+          {val:rank.icon,lbl:rank.label}
+        ].map(function(s){
+          return h("div",{key:s.lbl,className:"hf-scard"},
+            h("div",{className:"hf-sval"},s.val),
+            h("div",{className:"hf-slbl"},s.lbl)
+          );
+        })
       ),
       totalCheckins>0
         ?h(React.Fragment,null,
-            h("div",{className:"hf-trail-title"},"\uD83C\uDF5F Your Fry Trail"),
+            h("div",{className:"hf-trail-title"},"🍟 Your Fry Trail"),
             h("div",{className:"hf-trail"},
               Object.entries(checkins).slice().reverse().map(function(entry){
                 var id=entry[0],c=entry[1];
                 return h("div",{key:id,className:"hf-trail-row"},
                   h(ArchesOutline,{width:22}),
-                  h("div",{className:"hf-trail-info"},h("div",{className:"hf-trail-name"},c.name||"McDonald's"),h("div",{className:"hf-trail-loc"},[c.address,c.city].filter(Boolean).join(" \u00B7 ")||"\u2014")),
+                  h("div",{className:"hf-trail-info"},
+                    h("div",{className:"hf-trail-name"},c.name||"McDonald's"),
+                    h("div",{className:"hf-trail-loc"},[c.address,c.city].filter(Boolean).join(" · ")||"—")
+                  ),
                   h("div",{className:"hf-trail-date"},new Date(c.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}))
                 );
               })
             )
           )
         :h("div",{style:{background:"white",border:"3px solid #27251F",borderRadius:12,padding:32,textAlign:"center"}},
-            h("div",{style:{fontSize:"3rem",marginBottom:10}},"\uD83C\uDF5F"),
+            h("div",{style:{fontSize:"3rem",marginBottom:10}},"🍟"),
             h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"1rem"}},"No check-ins yet!"),
             h("div",{style:{color:"#888",fontSize:"0.82rem",marginTop:6,fontWeight:600}},"Head to Nearby to start your fry journey.")
           ),
@@ -551,9 +765,11 @@ useEffect(function(){
         "Had Fries is an unofficial personal family app not affiliated with McDonald's Corporation. The McDonald's name and Golden Arches are registered trademarks of McDonald's Corporation. Location data from OpenStreetMap contributors (ODbL)."
       )
     ),
+
     h("div",{className:"hf-toast"+(toast?" show":"")+(toast&&toast.type==="remove"?" remove":"")},toast&&toast.msg)
   );
 }
+
 var root=ReactDOM.createRoot(document.getElementById("root"));
 root.render(React.createElement(HadFries,null));
 </script>
