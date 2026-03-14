@@ -157,7 +157,7 @@ function buildQuery(lat,lng,radiusMi){
 function parseElement(el){
   var lat=el.lat||(el.center&&el.center.lat);
   var lng=el.lon||(el.center&&el.center.lon);
-  if(!lat||!lng)return null;
+  if(lat == null || lng == null) return null;
   var t=el.tags||{};
   var addr=[t["addr:housenumber"],t["addr:street"]].filter(Boolean).join(" ")||t["addr:full"]||"";
   return{id:el.type+"-"+el.id,name:t.name||"McDonald's",address:addr,city:t["addr:city"]||"",country:t["addr:country"]||"",lat:lat,lng:lng,hours:t.opening_hours||""};
@@ -236,34 +236,128 @@ function HadFries(){
   var toastRef=useRef(null);
   var photoInputRef=useRef(null);
   useEffect(function(){saveCheckins(checkins);},[checkins]);
-  var requestGeo=useCallback(function(){
-    if(!navigator.geolocation){setGeoStatus("denied");return;}
-    setGeoStatus("loading");
-    navigator.geolocation.getCurrentPosition(
-      function(pos){setUserPos({lat:pos.coords.latitude,lng:pos.coords.longitude});setGeoStatus("ok");},
-      function(){setGeoStatus("denied");},
-      {enableHighAccuracy:true,timeout:10000}
-    );
-  },[]);
-  useEffect(function(){
-    if(!userPos)return;
-    var cancelled=false;
-    setLoading(true);setLoadError(null);
-    var url="/api/overpass?data="+encodeURIComponent(buildQuery(userPos.lat,userPos.lng,radius));
-    fetch(url)
-      .then(function(r){if(!r.ok)throw new Error("Overpass error");return r.json();})
-      .then(function(data){
-        if(cancelled)return;
-        var seen={};
-        var locs=data.elements.map(parseElement).filter(Boolean).filter(function(l){
-          var k=l.lat.toFixed(4)+","+l.lng.toFixed(4);
-          if(seen[k])return false;seen[k]=true;return true;
-        });
-        setLocations(locs);setLoading(false);
-      })
-      .catch(function(e){if(!cancelled){setLoadError(e.message);setLoading(false);}});
-    return function(){cancelled=true;};
-  },[userPos,radius]);
+var requestGeo=useCallback(function(){
+  if (!window.isSecureContext) {
+    setLoadError("Location requires HTTPS.");
+    setGeoStatus("denied");
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    setLoadError("Geolocation is not supported by this browser.");
+    setGeoStatus("denied");
+    return;
+  }
+
+  setLoadError(null);
+  setGeoStatus("loading");
+
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      setUserPos({
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude
+      });
+      setGeoStatus("ok");
+    },
+    function(err){
+      var msg = "Could not get your location.";
+      if (err && err.code === 1) msg = "Location permission was denied.";
+      if (err && err.code === 2) msg = "Location unavailable. Check device location services.";
+      if (err && err.code === 3) msg = "Location request timed out.";
+
+      setLoadError(msg);
+      setGeoStatus("denied");
+    },
+    {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0
+    }
+  );
+},[]);
+function fetchLocations(lat, lng, radiusMi) {
+  setLoading(true);
+  setLoadError(null);
+
+  var url = "/api/overpass?data=" + encodeURIComponent(buildQuery(lat, lng, radiusMi));
+
+  return fetch(url)
+    .then(function(r){
+      return r.text().then(function(text){
+        if (!r.ok) {
+          throw new Error(text || ("Overpass error " + r.status));
+        }
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error("Invalid response from Overpass.");
+        }
+      });
+    })
+    .then(function(data){
+      var seen = {};
+      var locs = (data.elements || []).map(parseElement).filter(Boolean).filter(function(l){
+        var k = l.lat.toFixed(4) + "," + l.lng.toFixed(4);
+        if (seen[k]) return false;
+        seen[k] = true;
+        return true;
+      });
+      setLocations(locs);
+      setLoading(false);
+    })
+    .catch(function(e){
+      setLoadError(e.message || "Could not load locations.");
+      setLoading(false);
+    });
+}
+
+useEffect(function(){
+  if (!userPos) return;
+  var cancelled = false;
+
+  setLoading(true);
+  setLoadError(null);
+
+  var url = "/api/overpass?data=" + encodeURIComponent(buildQuery(userPos.lat, userPos.lng, radius));
+
+  fetch(url)
+    .then(function(r){
+      return r.text().then(function(text){
+        if (!r.ok) {
+          throw new Error(text || ("Overpass error " + r.status));
+        }
+        try {
+          return JSON.parse(text);
+        } catch (e) {
+          throw new Error("Invalid response from Overpass.");
+        }
+      });
+    })
+    .then(function(data){
+      if (cancelled) return;
+
+      var seen = {};
+      var locs = (data.elements || []).map(parseElement).filter(Boolean).filter(function(l){
+        var k = l.lat.toFixed(4) + "," + l.lng.toFixed(4);
+        if (seen[k]) return false;
+        seen[k] = true;
+        return true;
+      });
+
+      setLocations(locs);
+      setLoading(false);
+    })
+    .catch(function(e){
+      if (cancelled) return;
+      setLoadError(e.message || "Could not load locations.");
+      setLoading(false);
+    });
+
+  return function(){
+    cancelled = true;
+  };
+},[userPos, radius]);
   var withDist=locations.map(function(l){return Object.assign({},l,{dist:userPos?haversine(userPos.lat,userPos.lng,l.lat,l.lng):null});}).sort(function(a,b){return(a.dist||9999)-(b.dist||9999);});
   var filtered=withDist.filter(function(l){
     if(!search)return true;
@@ -377,7 +471,16 @@ function HadFries(){
         h("div",{style:{fontSize:"1.5rem",marginBottom:8}},"\u26A0\uFE0F"),
         h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"0.9rem",marginBottom:6}},"Couldn't load locations"),
         h("div",{style:{fontSize:"0.8rem",color:"#666",marginBottom:14}},"The Overpass API may be busy. Try again."),
-        h("button",{className:"hf-btn-red",onClick:function(){setLocations([]);setLoadError(null);setLoading(true);}},"Retry")
+        h("button",{
+  className:"hf-btn-red",
+  onClick:function(){
+    if (userPos) {
+      fetchLocations(userPos.lat, userPos.lng, radius);
+    } else {
+      requestGeo();
+    }
+  }
+},"Retry")
       )
     ),
     view==="nearby"&&geoStatus==="ok"&&!loading&&!loadError&&h(React.Fragment,null,
