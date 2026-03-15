@@ -144,18 +144,18 @@ function fmtDist(mi){
 function buildQuery(lat,lng,radiusMi){
   var r=Math.round(radiusMi*1609.34);
   var parts=[
-    '[out:json][timeout:25];',
-    '(',
-    'node["brand"~"McDonald\\\\'?s"](around:'+r+','+lat+','+lng+');',
-    'way["brand"~"McDonald\\\\'?s"](around:'+r+','+lat+','+lng+');',
-    'relation["brand"~"McDonald\\\\'?s"](around:'+r+','+lat+','+lng+');',
-    'node["amenity"="fast_food"]["name"~"McDonald\\\\'?s"](around:'+r+','+lat+','+lng+');',
-    'way["amenity"="fast_food"]["name"~"McDonald\\\\'?s"](around:'+r+','+lat+','+lng+');',
-    'relation["amenity"="fast_food"]["name"~"McDonald\\\\'?s"](around:'+r+','+lat+','+lng+');',
-    ');',
-    'out center 100;'
+    "[out:json][timeout:25];",
+    "(",
+    "node[brand~\"McDonald.*\"](around:"+r+","+lat+","+lng+");",
+    "way[brand~\"McDonald.*\"](around:"+r+","+lat+","+lng+");",
+    "relation[brand~\"McDonald.*\"](around:"+r+","+lat+","+lng+");",
+    "node[amenity=fast_food][name~\"McDonald.*\"](around:"+r+","+lat+","+lng+");",
+    "way[amenity=fast_food][name~\"McDonald.*\"](around:"+r+","+lat+","+lng+");",
+    "relation[amenity=fast_food][name~\"McDonald.*\"](around:"+r+","+lat+","+lng+");",
+    ");",
+    "out center 100;"
   ];
-  return parts.join(' ');
+  return parts.join(" ");
 }
 function parseElement(el){
   var lat=el.lat||(el.center&&el.center.lat);
