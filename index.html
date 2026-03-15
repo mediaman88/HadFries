@@ -345,7 +345,7 @@ function HadFries(){
       showToast("\uD83C\uDF5F Had Fries here!");
     }
   }
-    function handlePhotoUpload(e){
+      function handlePhotoUpload(e){
     var file=e.target.files&&e.target.files[0];
     if(!file)return;
     setPhotoProcessing(true);
@@ -380,6 +380,7 @@ function HadFries(){
             setPhotoProcessing(false);
             return;
           }
+
           var closest=locs.map(function(l){
             return Object.assign({},l,{dist:haversine(gps.lat,gps.lng,l.lat,l.lng)});
           }).sort(function(a,b){return a.dist-b.dist;})[0];
