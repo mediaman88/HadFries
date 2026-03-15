@@ -1,40 +1,45 @@
-const https=require("https");
+const https = require('https');
 
-module.exports=function(req,res){
+module.exports = function (req, res) {
+  const q = req.query.q;
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-const q=req.query.q;
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-const key=process.env.GOOGLE_MAPS_API_KEY;
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
 
-if(!q){
-res.status(400).json({error:"missing query"});
-return;
-}
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Missing GOOGLE_MAPS_API_KEY' });
+  }
 
-const url="/maps/api/geocode/json?address="+encodeURIComponent(q)+"&key="+key;
+  if (!q) {
+    return res.status(400).json({ error: 'Missing query parameter: q' });
+  }
 
-https.get({
-hostname:"maps.googleapis.com",
-path:url
-},function(r){
+  const path = '/maps/api/geocode/json?address=' + encodeURIComponent(q) + '&key=' + encodeURIComponent(apiKey);
 
-let d="";
+  https.get(
+    {
+      hostname: 'maps.googleapis.com',
+      path
+    },
+    (upstreamRes) => {
+      let data = '';
 
-r.on("data",c=>d+=c);
+      upstreamRes.on('data', (chunk) => {
+        data += chunk;
+      });
 
-r.on("end",function(){
-
-res.setHeader("Access-Control-Allow-Origin","*");
-res.setHeader("Content-Type","application/json");
-
-res.status(200).end(d);
-
-});
-
-}).on("error",function(e){
-
-res.status(500).json({error:e.message});
-
-});
-
-}
+      upstreamRes.on('end', () => {
+        res.setHeader('Content-Type', 'application/json');
+        res.status(upstreamRes.statusCode || 500).end(data);
+      });
+    }
+  ).on('error', (err) => {
+    res.status(500).json({ error: err.message });
+  });
+};
