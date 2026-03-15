@@ -1,779 +1,1108 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Had Fries</title>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Nunito',sans-serif;background:#FFC72C;min-height:100vh;color:#27251F}
-.hf-header{background:#DA0023;position:sticky;top:0;z-index:100;box-shadow:0 4px 0 #27251F}
-.hf-header-inner{max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.hf-logo{display:flex;align-items:center;gap:10px}
-.hf-title{color:white;font-size:1.4rem;font-family:'Archivo Black',sans-serif;text-shadow:2px 2px 0 #27251F;line-height:1}
-.hf-sub{color:#FFC72C;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase}
-.hf-disclaimer{color:rgba(255,199,44,0.6);font-size:0.45rem;font-weight:600;letter-spacing:1px;margin-top:1px}
-.hf-badge{background:#FFC72C;border:3px solid #27251F;border-radius:10px;padding:5px 12px;text-align:center;min-width:80px}
-.hf-badge-num{font-size:1.4rem;font-family:'Archivo Black',sans-serif;color:#DA0023;line-height:1}
-.hf-badge-lbl{font-size:0.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
-.hf-user-btn{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 10px;color:white;font-size:0.72rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
-.hf-user-btn img{width:24px;height:24px;border-radius:50%;border:2px solid white}
-.hf-nav{background:#27251F;display:flex}
-.hf-nav-inner{max-width:900px;margin:0 auto;display:flex;width:100%}
-.hf-nav-btn{flex:1;padding:9px 4px;background:transparent;border:none;border-bottom:3px solid transparent;color:#888;font-family:'Archivo Black',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
-.hf-nav-btn:hover{color:#FFC72C}
-.hf-nav-btn.active{color:#FFC72C;border-bottom-color:#FFC72C}
-.hf-photo-bar{background:#27251F;border-bottom:3px solid #000}
-.hf-photo-bar-inner{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
-.hf-photo-hint{color:#888;font-size:0.7rem;font-weight:600}
-.hf-photo-btn{display:flex;align-items:center;gap:6px;background:#FFC72C;color:#27251F;border:3px solid #FFC72C;border-radius:8px;padding:8px 14px;font-size:0.72rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Archivo Black',sans-serif;white-space:nowrap}
-.hf-photo-btn:hover{background:#e6af20}
-.hf-geo-banner{max-width:900px;margin:20px auto;padding:0 16px}
-.hf-geo-card{background:white;border:3px solid #27251F;border-radius:14px;padding:28px 24px;text-align:center;margin-top:20px}
-.hf-geo-icon{font-size:3rem;margin-bottom:10px}
-.hf-geo-title{font-family:'Archivo Black',sans-serif;font-size:1.2rem;margin-bottom:6px}
-.hf-geo-desc{color:#666;font-size:0.85rem;font-weight:600;margin-bottom:18px;line-height:1.5}
-.hf-btn-red{background:#DA0023;color:white;border:3px solid #27251F;border-radius:10px;padding:11px 24px;font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:1px;cursor:pointer}
-.hf-btn-red:hover{background:#b5001d}
-.hf-controls{background:#FFC72C;padding:12px 16px;border-bottom:3px solid #27251F}
-.hf-controls-inner{max-width:900px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.hf-search{flex:1;min-width:180px;padding:9px 14px;border:3px solid #27251F;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;background:white;outline:none}
-.hf-search:focus{border-color:#DA0023}
-.hf-select{padding:9px 12px;border:3px solid #27251F;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;background:white;outline:none;cursor:pointer}
-.hf-geo-pill{display:flex;align-items:center;gap:6px;background:#27251F;color:#FFC72C;border-radius:8px;padding:8px 12px;font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:none}
-.hf-geo-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;display:inline-block}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
-.hf-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
-.hf-modal{background:white;border:4px solid #27251F;border-radius:16px;padding:28px;max-width:420px;width:100%;text-align:center;box-shadow:8px 8px 0 #27251F;max-height:90vh;overflow-y:auto}
-.hf-modal-icon{font-size:3rem;margin-bottom:12px}
-.hf-modal-title{font-family:'Archivo Black',sans-serif;font-size:1.1rem;margin-bottom:8px}
-.hf-modal-desc{color:#666;font-size:0.82rem;font-weight:600;margin-bottom:20px;line-height:1.6}
-.hf-modal-loc{background:#FFF8E7;border:2px solid #FFC72C;border-radius:10px;padding:12px;margin-bottom:18px;text-align:left}
-.hf-modal-loc-name{font-family:'Archivo Black',sans-serif;font-size:0.95rem;color:#DA0023}
-.hf-modal-loc-addr{font-size:0.75rem;color:#888;font-weight:600;margin-top:3px}
-.hf-modal-loc-dist{font-size:0.7rem;font-weight:900;color:#27251F;margin-top:4px}
-.hf-modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.hf-btn-ghost{background:white;color:#27251F;border:3px solid #27251F;border-radius:10px;padding:10px 20px;font-family:'Archivo Black',sans-serif;font-size:0.82rem;cursor:pointer}
-.hf-loading{max-width:900px;margin:40px auto;padding:0 16px;text-align:center}
-.hf-spinner{width:48px;height:48px;border:5px solid #27251F;border-top-color:#DA0023;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.hf-loading-txt{font-family:'Archivo Black',sans-serif;font-size:0.9rem;letter-spacing:1px;color:#27251F}
-.hf-grid{max-width:900px;margin:0 auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
-.hf-card{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden;transition:transform 0.15s,box-shadow 0.15s;position:relative}
-.hf-card:hover{transform:translateY(-3px);box-shadow:5px 5px 0 #27251F}
-.hf-card.checked{border-color:#DA0023;background:#FFF8E7}
-.hf-card.celebrating{animation:bounce 1.1s ease}
-@keyframes bounce{0%,100%{transform:translateY(-3px)}20%{transform:translateY(-12px) scale(1.04)}50%{transform:translateY(-8px)}70%{transform:translateY(-10px)}}
-.hf-card-top{background:#27251F;padding:12px 14px;display:flex;align-items:flex-start;gap:10px}
-.hf-card-loc-info{flex:1;overflow:hidden}
-.hf-card-name{color:#FFC72C;font-family:'Archivo Black',sans-serif;font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hf-card-addr{color:#aaa;font-size:0.7rem;font-weight:600;margin-top:2px;line-height:1.3}
-.hf-dist-pill{background:#FFC72C;color:#27251F;border-radius:6px;padding:2px 8px;font-size:0.65rem;font-weight:900;white-space:nowrap;flex-shrink:0}
-.hf-card-bottom{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.hf-card-meta{font-size:0.72rem;color:#888;font-weight:600;line-height:1.4;flex:1}
-.hf-checkin-btn{padding:7px 13px;border-radius:8px;border:2.5px solid #27251F;font-family:'Archivo Black',sans-serif;font-size:0.7rem;cursor:pointer;transition:all 0.12s;white-space:nowrap}
-.hf-checkin-btn.no{background:#DA0023;color:white}
-.hf-checkin-btn.yes{background:#FFC72C;color:#27251F}
-.hf-stamp{position:absolute;top:8px;right:8px;width:32px;height:32px;background:#DA0023;border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;box-shadow:0 2px 6px rgba(0,0,0,0.4);animation:stamp 0.4s cubic-bezier(.22,1,.36,1)}
-@keyframes stamp{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1);opacity:1}}
-.hf-list{max-width:900px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:8px}
-.hf-list-row{background:white;border:3px solid #27251F;border-radius:10px;display:flex;align-items:center;gap:12px;padding:10px 14px;transition:transform 0.1s}
-.hf-list-row:hover{transform:translateX(4px)}
-.hf-list-row.checked{border-color:#DA0023;background:#FFF8E7}
-.hf-list-name{font-weight:900;font-size:0.9rem}
-.hf-list-sub{color:#888;font-size:0.72rem;font-weight:600}
-.hf-stats{max-width:900px;margin:0 auto;padding:20px 16px}
-.hf-stats-hero{background:#DA0023;border:3px solid #27251F;border-radius:16px;padding:28px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden}
-.hf-stats-big{font-family:'Archivo Black',sans-serif;font-size:5rem;color:#FFC72C;line-height:1;text-shadow:4px 4px 0 rgba(0,0,0,0.25)}
-.hf-stats-tag{color:white;font-size:0.85rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-top:4px}
-.hf-stats-rank{margin-top:14px}
-.hf-rank-chip{display:inline-block;background:#FFC72C;color:#27251F;border:2.5px solid #27251F;border-radius:999px;padding:6px 18px;font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:1px}
-.hf-progress-wrap{background:white;border:3px solid #27251F;border-radius:12px;padding:16px;margin-bottom:16px}
-.hf-progress-title{font-family:'Archivo Black',sans-serif;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;color:#27251F}
-.hf-level-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.hf-level-row:last-child{margin-bottom:0}
-.hf-level-icon{font-size:1.4rem;width:32px;text-align:center;flex-shrink:0}
-.hf-level-info{flex:1}
-.hf-level-name{font-family:'Archivo Black',sans-serif;font-size:0.82rem;color:#27251F}
-.hf-level-range{font-size:0.65rem;color:#aaa;font-weight:600}
-.hf-level-bar-bg{background:#f0f0f0;border-radius:999px;height:8px;margin-top:4px;overflow:hidden}
-.hf-level-bar-fill{height:8px;border-radius:999px;background:#DA0023;transition:width 0.6s ease}
-.hf-level-row.current .hf-level-name{color:#DA0023}
-.hf-level-row.current .hf-level-bar-fill{background:#FFC72C}
-.hf-level-row.done .hf-level-bar-fill{background:#4ade80}
-.hf-level-check{font-size:0.9rem;flex-shrink:0}
-.hf-sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
-.hf-scard{background:white;border:3px solid #27251F;border-radius:12px;padding:16px;text-align:center}
-.hf-sval{font-family:'Archivo Black',sans-serif;font-size:2.2rem;color:#DA0023;line-height:1}
-.hf-slbl{font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-top:3px}
-.hf-trail-title{font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.hf-trail{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden}
-.hf-trail-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1.5px solid #f0f0f0}
-.hf-trail-row:last-child{border-bottom:none}
-.hf-trail-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;border:2px solid #27251F;cursor:pointer;flex-shrink:0;background:#f0f0f0}
-.hf-trail-thumb-empty{width:52px;height:52px;border-radius:8px;border:2px dashed #ddd;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:#fafafa}
-.hf-trail-info{flex:1;min-width:0}
-.hf-trail-name{font-weight:800;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hf-trail-loc{color:#888;font-size:0.7rem;font-weight:600;margin-top:2px}
-.hf-trail-country{font-size:0.75rem;font-weight:700;color:#DA0023;margin-top:2px}
-.hf-trail-date{font-size:0.65rem;color:#aaa;font-weight:600;white-space:nowrap;flex-shrink:0}
-.hf-countries-section{max-width:900px;margin:0 auto;padding:0 16px 20px}
-.hf-countries-title{font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
-.hf-countries-grid{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-.hf-country-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #f5f5f5;border-right:1px solid #f5f5f5}
-.hf-country-row.visited{background:#FFF8E7}
-.hf-country-flag{font-size:1.2rem;flex-shrink:0}
-.hf-country-name{font-size:0.75rem;font-weight:700;flex:1}
-.hf-country-check{font-size:0.8rem}
-.hf-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#27251F;color:white;padding:11px 22px;border-radius:999px;font-weight:700;font-size:0.88rem;border:3px solid #FFC72C;z-index:999;transition:transform 0.3s cubic-bezier(.22,1,.36,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.25)}
-.hf-toast.show{transform:translateX(-50%) translateY(0)}
-.hf-toast.remove{border-color:#888}
-.hf-empty{grid-column:1/-1;text-align:center;padding:48px 20px;font-family:'Archivo Black',sans-serif;font-size:1rem;letter-spacing:1px;opacity:0.5}
-.hf-result-count{max-width:900px;margin:8px auto 0;padding:0 16px;font-size:0.75rem;font-weight:700;color:#27251F;opacity:0.6;letter-spacing:1px}
-.hf-photo-upload-area{border:3px dashed #27251F;border-radius:10px;padding:20px;text-align:center;cursor:pointer;margin-bottom:16px;background:#FFF8E7}
-.hf-photo-preview{width:100%;max-height:180px;object-fit:cover;border-radius:8px;border:3px solid #27251F;margin-bottom:12px}
-.hf-lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
-.hf-lightbox img{max-width:100%;max-height:90vh;border-radius:12px;border:4px solid white}
-.hf-lightbox-close{position:absolute;top:16px;right:20px;color:white;font-size:2rem;cursor:pointer;font-family:'Archivo Black',sans-serif;line-height:1}
-.hf-login-screen{max-width:400px;margin:60px auto;padding:0 16px;text-align:center}
-.hf-login-card{background:white;border:4px solid #27251F;border-radius:16px;padding:36px 28px;box-shadow:8px 8px 0 #27251F}
-.hf-google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:white;border:3px solid #27251F;border-radius:10px;padding:12px 24px;font-family:'Archivo Black',sans-serif;font-size:0.9rem;cursor:pointer;width:100%;transition:all 0.12s;margin-top:20px}
-.hf-google-btn:hover{background:#f5f5f5;transform:scale(1.02)}
-.hf-google-btn svg{width:20px;height:20px;flex-shrink:0}
-@media(max-width:600px){.hf-title{font-size:1.1rem}.hf-stats-big{font-size:3.5rem}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Had Fries</title>
+
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet" />
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Nunito',sans-serif;background:#FFC72C;min-height:100vh;color:#27251F}
+    .hf-header{background:#DA0023;position:sticky;top:0;z-index:100;box-shadow:0 4px 0 #27251F}
+    .hf-header-inner{max-width:900px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .hf-logo{display:flex;align-items:center;gap:10px}
+    .hf-title{color:white;font-size:1.4rem;font-family:'Archivo Black',sans-serif;text-shadow:2px 2px 0 #27251F;line-height:1}
+    .hf-sub{color:#FFC72C;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase}
+    .hf-disclaimer{color:rgba(255,199,44,0.6);font-size:0.45rem;font-weight:600;letter-spacing:1px;margin-top:1px}
+    .hf-badge{background:#FFC72C;border:3px solid #27251F;border-radius:10px;padding:5px 12px;text-align:center;min-width:80px}
+    .hf-badge-num{font-size:1.4rem;font-family:'Archivo Black',sans-serif;color:#DA0023;line-height:1}
+    .hf-badge-lbl{font-size:0.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+    .hf-user-btn{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 10px;color:white;font-size:0.72rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
+    .hf-user-btn img{width:24px;height:24px;border-radius:50%;border:2px solid white}
+    .hf-nav{background:#27251F;display:flex}
+    .hf-nav-inner{max-width:900px;margin:0 auto;display:flex;width:100%}
+    .hf-nav-btn{flex:1;padding:9px 4px;background:transparent;border:none;border-bottom:3px solid transparent;color:#888;font-family:'Archivo Black',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all 0.15s}
+    .hf-nav-btn:hover{color:#FFC72C}
+    .hf-nav-btn.active{color:#FFC72C;border-bottom-color:#FFC72C}
+    .hf-photo-bar{background:#27251F;border-bottom:3px solid #000}
+    .hf-photo-bar-inner{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:14px}
+    .hf-photo-hint{color:#888;font-size:0.7rem;font-weight:600}
+    .hf-photo-btn{display:flex;align-items:center;gap:6px;background:#FFC72C;color:#27251F;border:3px solid #FFC72C;border-radius:8px;padding:8px 14px;font-size:0.72rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:'Archivo Black',sans-serif;white-space:nowrap}
+    .hf-photo-btn:hover{background:#e6af20}
+    .hf-geo-banner{max-width:900px;margin:20px auto;padding:0 16px}
+    .hf-geo-card{background:white;border:3px solid #27251F;border-radius:14px;padding:28px 24px;text-align:center;margin-top:20px}
+    .hf-geo-icon{font-size:3rem;margin-bottom:10px}
+    .hf-geo-title{font-family:'Archivo Black',sans-serif;font-size:1.2rem;margin-bottom:6px}
+    .hf-geo-desc{color:#666;font-size:0.85rem;font-weight:600;margin-bottom:18px;line-height:1.5}
+    .hf-btn-red{background:#DA0023;color:white;border:3px solid #27251F;border-radius:10px;padding:11px 24px;font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:1px;cursor:pointer}
+    .hf-btn-red:hover{background:#b5001d}
+    .hf-controls{background:#FFC72C;padding:12px 16px;border-bottom:3px solid #27251F}
+    .hf-controls-inner{max-width:900px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .hf-search{flex:1;min-width:180px;padding:9px 14px;border:3px solid #27251F;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;background:white;outline:none}
+    .hf-search:focus{border-color:#DA0023}
+    .hf-select{padding:9px 12px;border:3px solid #27251F;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;background:white;outline:none;cursor:pointer}
+    .hf-geo-pill{display:flex;align-items:center;gap:6px;background:#27251F;color:#FFC72C;border-radius:8px;padding:8px 12px;font-size:0.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border:none}
+    .hf-geo-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;display:inline-block}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
+    .hf-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+    .hf-modal{background:white;border:4px solid #27251F;border-radius:16px;padding:28px;max-width:420px;width:100%;text-align:center;box-shadow:8px 8px 0 #27251F;max-height:90vh;overflow-y:auto}
+    .hf-modal-icon{font-size:3rem;margin-bottom:12px}
+    .hf-modal-title{font-family:'Archivo Black',sans-serif;font-size:1.1rem;margin-bottom:8px}
+    .hf-modal-desc{color:#666;font-size:0.82rem;font-weight:600;margin-bottom:20px;line-height:1.6}
+    .hf-modal-loc{background:#FFF8E7;border:2px solid #FFC72C;border-radius:10px;padding:12px;margin-bottom:18px;text-align:left}
+    .hf-modal-loc-name{font-family:'Archivo Black',sans-serif;font-size:0.95rem;color:#DA0023}
+    .hf-modal-loc-addr{font-size:0.75rem;color:#888;font-weight:600;margin-top:3px}
+    .hf-modal-loc-dist{font-size:0.7rem;font-weight:900;color:#27251F;margin-top:4px}
+    .hf-modal-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .hf-btn-ghost{background:white;color:#27251F;border:3px solid #27251F;border-radius:10px;padding:10px 20px;font-family:'Archivo Black',sans-serif;font-size:0.82rem;cursor:pointer}
+    .hf-loading{max-width:900px;margin:40px auto;padding:0 16px;text-align:center}
+    .hf-spinner{width:48px;height:48px;border:5px solid #27251F;border-top-color:#DA0023;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 14px}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .hf-loading-txt{font-family:'Archivo Black',sans-serif;font-size:0.9rem;letter-spacing:1px;color:#27251F}
+    .hf-grid{max-width:900px;margin:0 auto;padding:16px;display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
+    .hf-card{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden;transition:transform 0.15s,box-shadow 0.15s;position:relative}
+    .hf-card:hover{transform:translateY(-3px);box-shadow:5px 5px 0 #27251F}
+    .hf-card.checked{border-color:#DA0023;background:#FFF8E7}
+    .hf-card.celebrating{animation:bounce 1.1s ease}
+    @keyframes bounce{0%,100%{transform:translateY(-3px)}20%{transform:translateY(-12px) scale(1.04)}50%{transform:translateY(-8px)}70%{transform:translateY(-10px)}}
+    .hf-card-top{background:#27251F;padding:12px 14px;display:flex;align-items:flex-start;gap:10px}
+    .hf-card-loc-info{flex:1;overflow:hidden}
+    .hf-card-name{color:#FFC72C;font-family:'Archivo Black',sans-serif;font-size:0.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .hf-card-addr{color:#aaa;font-size:0.7rem;font-weight:600;margin-top:2px;line-height:1.3}
+    .hf-dist-pill{background:#FFC72C;color:#27251F;border-radius:6px;padding:2px 8px;font-size:0.65rem;font-weight:900;white-space:nowrap;flex-shrink:0}
+    .hf-card-bottom{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .hf-card-meta{font-size:0.72rem;color:#888;font-weight:600;line-height:1.4;flex:1}
+    .hf-checkin-btn{padding:7px 13px;border-radius:8px;border:2.5px solid #27251F;font-family:'Archivo Black',sans-serif;font-size:0.7rem;cursor:pointer;transition:all 0.12s;white-space:nowrap}
+    .hf-checkin-btn.no{background:#DA0023;color:white}
+    .hf-checkin-btn.yes{background:#FFC72C;color:#27251F}
+    .hf-stamp{position:absolute;top:8px;right:8px;width:32px;height:32px;background:#DA0023;border:2px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.9rem;box-shadow:0 2px 6px rgba(0,0,0,0.4);animation:stamp 0.4s cubic-bezier(.22,1,.36,1)}
+    @keyframes stamp{from{transform:scale(0) rotate(-20deg);opacity:0}to{transform:scale(1);opacity:1}}
+    .hf-list{max-width:900px;margin:0 auto;padding:16px;display:flex;flex-direction:column;gap:8px}
+    .hf-list-row{background:white;border:3px solid #27251F;border-radius:10px;display:flex;align-items:center;gap:12px;padding:10px 14px;transition:transform 0.1s}
+    .hf-list-row:hover{transform:translateX(4px)}
+    .hf-list-row.checked{border-color:#DA0023;background:#FFF8E7}
+    .hf-list-name{font-weight:900;font-size:0.9rem}
+    .hf-list-sub{color:#888;font-size:0.72rem;font-weight:600}
+    .hf-stats{max-width:900px;margin:0 auto;padding:20px 16px}
+    .hf-stats-hero{background:#DA0023;border:3px solid #27251F;border-radius:16px;padding:28px;text-align:center;margin-bottom:16px;position:relative;overflow:hidden}
+    .hf-stats-big{font-family:'Archivo Black',sans-serif;font-size:5rem;color:#FFC72C;line-height:1;text-shadow:4px 4px 0 rgba(0,0,0,0.25)}
+    .hf-stats-tag{color:white;font-size:0.85rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin-top:4px}
+    .hf-stats-rank{margin-top:14px}
+    .hf-rank-chip{display:inline-block;background:#FFC72C;color:#27251F;border:2.5px solid #27251F;border-radius:999px;padding:6px 18px;font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:1px}
+    .hf-progress-wrap{background:white;border:3px solid #27251F;border-radius:12px;padding:16px;margin-bottom:16px}
+    .hf-progress-title{font-family:'Archivo Black',sans-serif;font-size:0.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;color:#27251F}
+    .hf-level-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+    .hf-level-row:last-child{margin-bottom:0}
+    .hf-level-icon{font-size:1.4rem;width:32px;text-align:center;flex-shrink:0}
+    .hf-level-info{flex:1}
+    .hf-level-name{font-family:'Archivo Black',sans-serif;font-size:0.82rem;color:#27251F}
+    .hf-level-range{font-size:0.65rem;color:#aaa;font-weight:600}
+    .hf-level-bar-bg{background:#f0f0f0;border-radius:999px;height:8px;margin-top:4px;overflow:hidden}
+    .hf-level-bar-fill{height:8px;border-radius:999px;background:#DA0023;transition:width 0.6s ease}
+    .hf-level-row.current .hf-level-name{color:#DA0023}
+    .hf-level-row.current .hf-level-bar-fill{background:#FFC72C}
+    .hf-level-row.done .hf-level-bar-fill{background:#4ade80}
+    .hf-level-check{font-size:0.9rem;flex-shrink:0}
+    .hf-sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+    .hf-scard{background:white;border:3px solid #27251F;border-radius:12px;padding:16px;text-align:center}
+    .hf-sval{font-family:'Archivo Black',sans-serif;font-size:2.2rem;color:#DA0023;line-height:1}
+    .hf-slbl{font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;margin-top:3px}
+    .hf-trail-title{font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+    .hf-trail{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden}
+    .hf-trail-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1.5px solid #f0f0f0}
+    .hf-trail-row:last-child{border-bottom:none}
+    .hf-trail-thumb{width:52px;height:52px;border-radius:8px;object-fit:cover;border:2px solid #27251F;cursor:pointer;flex-shrink:0;background:#f0f0f0}
+    .hf-trail-thumb-empty{width:52px;height:52px;border-radius:8px;border:2px dashed #ddd;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:#fafafa}
+    .hf-trail-info{flex:1;min-width:0}
+    .hf-trail-name{font-weight:800;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .hf-trail-loc{color:#888;font-size:0.7rem;font-weight:600;margin-top:2px}
+    .hf-trail-country{font-size:0.75rem;font-weight:700;color:#DA0023;margin-top:2px}
+    .hf-trail-date{font-size:0.65rem;color:#aaa;font-weight:600;white-space:nowrap;flex-shrink:0}
+    .hf-countries-grid{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+    .hf-country-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #f5f5f5;border-right:1px solid #f5f5f5}
+    .hf-country-row.visited{background:#FFF8E7}
+    .hf-country-flag{font-size:1.2rem;flex-shrink:0}
+    .hf-country-name{font-size:0.75rem;font-weight:700;flex:1}
+    .hf-country-check{font-size:0.8rem}
+    .hf-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#27251F;color:white;padding:11px 22px;border-radius:999px;font-weight:700;font-size:0.88rem;border:3px solid #FFC72C;z-index:999;transition:transform 0.3s cubic-bezier(.22,1,.36,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+    .hf-toast.show{transform:translateX(-50%) translateY(0)}
+    .hf-toast.remove{border-color:#888}
+    .hf-empty{text-align:center;padding:48px 20px;font-family:'Archivo Black',sans-serif;font-size:1rem;letter-spacing:1px;opacity:0.5}
+    .hf-result-count{max-width:900px;margin:8px auto 0;padding:0 16px;font-size:0.75rem;font-weight:700;color:#27251F;opacity:0.6;letter-spacing:1px}
+    .hf-photo-upload-area{border:3px dashed #27251F;border-radius:10px;padding:20px;text-align:center;cursor:pointer;margin-bottom:16px;background:#FFF8E7}
+    .hf-photo-preview{width:100%;max-height:180px;object-fit:cover;border-radius:8px;border:3px solid #27251F;margin-bottom:12px}
+    .hf-lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:300;display:flex;align-items:center;justify-content:center;padding:20px}
+    .hf-lightbox img{max-width:100%;max-height:90vh;border-radius:12px;border:4px solid white}
+    .hf-lightbox-close{position:absolute;top:16px;right:20px;color:white;font-size:2rem;cursor:pointer;font-family:'Archivo Black',sans-serif;line-height:1}
+    .hf-login-screen{max-width:400px;margin:60px auto;padding:0 16px;text-align:center}
+    .hf-login-card{background:white;border:4px solid #27251F;border-radius:16px;padding:36px 28px;box-shadow:8px 8px 0 #27251F}
+    .hf-google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:white;border:3px solid #27251F;border-radius:10px;padding:12px 24px;font-family:'Archivo Black',sans-serif;font-size:0.9rem;cursor:pointer;width:100%;transition:all 0.12s;margin-top:20px}
+    .hf-google-btn:hover{background:#f5f5f5;transform:scale(1.02)}
+    .hf-google-btn svg{width:20px;height:20px;flex-shrink:0}
+    @media(max-width:600px){.hf-title{font-size:1.1rem}.hf-stats-big{font-size:3.5rem}}
+  </style>
 </head>
 <body>
-<div id="root"></div>
-<script>
-var SUPABASE_URL="https://btwmhgdlduhmdffzzzxg.supabase.co";
-var SUPABASE_ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0d21oZ2RsZHVobWRmZnp6enhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mzg0NzAsImV4cCI6MjA4OTExNDQ3MH0.qAsXddB7DOqlipekvxEmHRM2MNPtKkNvHGXPWW8TyKw";
-var CLOUDINARY_CLOUD="dysvuqynm";
-var CLOUDINARY_PRESET="HadFries";
-var sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON);
+  <div id="root"></div>
 
-var MCDONALDS_COUNTRIES=[
-{name:“Argentina”,code:“AR”},{name:“Australia”,code:“AU”},{name:“Austria”,code:“AT”},
-{name:“Azerbaijan”,code:“AZ”},{name:“Bahrain”,code:“BH”},{name:“Belarus”,code:“BY”},
-{name:“Belgium”,code:“BE”},{name:“Bosnia and Herzegovina”,code:“BA”},{name:“Brazil”,code:“BR”},
-{name:“Bulgaria”,code:“BG”},{name:“Canada”,code:“CA”},{name:“Chile”,code:“CL”},
-{name:“China”,code:“CN”},{name:“Colombia”,code:“CO”},{name:“Costa Rica”,code:“CR”},
-{name:“Croatia”,code:“HR”},{name:“Cyprus”,code:“CY”},{name:“Czech Republic”,code:“CZ”},
-{name:“Denmark”,code:“DK”},{name:“Ecuador”,code:“EC”},{name:“Egypt”,code:“EG”},
-{name:“El Salvador”,code:“SV”},{name:“Estonia”,code:“EE”},{name:“Finland”,code:“FI”},
-{name:“France”,code:“FR”},{name:“Georgia”,code:“GE”},{name:“Germany”,code:“DE”},
-{name:“Greece”,code:“GR”},{name:“Guatemala”,code:“GT”},{name:“Honduras”,code:“HN”},
-{name:“Hong Kong”,code:“HK”},{name:“Hungary”,code:“HU”},{name:“Iceland”,code:“IS”},
-{name:“India”,code:“IN”},{name:“Indonesia”,code:“ID”},{name:“Ireland”,code:“IE”},
-{name:“Israel”,code:“IL”},{name:“Italy”,code:“IT”},{name:“Japan”,code:“JP”},
-{name:“Jordan”,code:“JO”},{name:“Kazakhstan”,code:“KZ”},{name:“Kuwait”,code:“KW”},
-{name:“Latvia”,code:“LV”},{name:“Lebanon”,code:“LB”},{name:“Lithuania”,code:“LT”},
-{name:“Luxembourg”,code:“LU”},{name:“Malaysia”,code:“MY”},{name:“Malta”,code:“MT”},
-{name:“Mexico”,code:“MX”},{name:“Moldova”,code:“MD”},{name:“Monaco”,code:“MC”},
-{name:“Morocco”,code:“MA”},{name:“Netherlands”,code:“NL”},{name:“New Zealand”,code:“NZ”},
-{name:“Nicaragua”,code:“NI”},{name:“North Macedonia”,code:“MK”},{name:“Norway”,code:“NO”},
-{name:“Oman”,code:“OM”},{name:“Pakistan”,code:“PK”},{name:“Panama”,code:“PA”},
-{name:“Paraguay”,code:“PY”},{name:“Peru”,code:“PE”},{name:“Philippines”,code:“PH”},
-{name:“Poland”,code:“PL”},{name:“Portugal”,code:“PT”},{name:“Qatar”,code:“QA”},
-{name:“Romania”,code:“RO”},{name:“Russia”,code:“RU”},{name:“Saudi Arabia”,code:“SA”},
-{name:“Serbia”,code:“RS”},{name:“Singapore”,code:“SG”},{name:“Slovakia”,code:“SK”},
-{name:“Slovenia”,code:“SI”},{name:“South Africa”,code:“ZA”},{name:“South Korea”,code:“KR”},
-{name:“Spain”,code:“ES”},{name:“Sri Lanka”,code:“LK”},{name:“Sweden”,code:“SE”},
-{name:“Switzerland”,code:“CH”},{name:“Taiwan”,code:“TW”},{name:“Thailand”,code:“TH”},
-{name:“Turkey”,code:“TR”},{name:“Ukraine”,code:“UA”},{name:“United Arab Emirates”,code:“AE”},
-{name:“United Kingdom”,code:“GB”},{name:“United States”,code:“US”},{name:“Uruguay”,code:“UY”},
-{name:“Venezuela”,code:“VE”},{name:“Vietnam”,code:“VN”}
-];
+  <script>
+    var SUPABASE_URL = "https://btwmhgdlduhmdffzzzxg.supabase.co";
+    var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0d21oZ2RsZHVobWRmZnp6enhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mzg0NzAsImV4cCI6MjA4OTExNDQ3MH0.qAsXddB7DOqlipekvxEmHRM2MNPtKkNvHGXPWW8TyKw";
+    var CLOUDINARY_CLOUD = "dysvuqynm";
+    var CLOUDINARY_PRESET = "HadFries";
+    var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-var LEVELS=[
-{label:“Fry Rookie”,icon:”\uD83E\uDD54”,min:0,max:0},
-{label:“Fry Explorer”,icon:”\uD83C\uDF5F”,min:1,max:10},
-{label:“Fry Fanatic”,icon:”\uD83D\uDD25”,min:11,max:25},
-{label:“Fry Legend”,icon:”\uD83D\uDC51”,min:26,max:50},
-{label:“Fry Deity”,icon:”\uD83C\uDFC6”,min:51,max:111},
-{label:“Final Fry Boss”,icon:”\uD83C\uDF1F”,min:112,max:999}
-];
+    var MCDONALDS_COUNTRIES = [
+      {name:"Argentina",code:"AR"},{name:"Australia",code:"AU"},{name:"Austria",code:"AT"},
+      {name:"Azerbaijan",code:"AZ"},{name:"Bahrain",code:"BH"},{name:"Belarus",code:"BY"},
+      {name:"Belgium",code:"BE"},{name:"Bosnia and Herzegovina",code:"BA"},{name:"Brazil",code:"BR"},
+      {name:"Bulgaria",code:"BG"},{name:"Canada",code:"CA"},{name:"Chile",code:"CL"},
+      {name:"China",code:"CN"},{name:"Colombia",code:"CO"},{name:"Costa Rica",code:"CR"},
+      {name:"Croatia",code:"HR"},{name:"Cyprus",code:"CY"},{name:"Czech Republic",code:"CZ"},
+      {name:"Denmark",code:"DK"},{name:"Ecuador",code:"EC"},{name:"Egypt",code:"EG"},
+      {name:"El Salvador",code:"SV"},{name:"Estonia",code:"EE"},{name:"Finland",code:"FI"},
+      {name:"France",code:"FR"},{name:"Georgia",code:"GE"},{name:"Germany",code:"DE"},
+      {name:"Greece",code:"GR"},{name:"Guatemala",code:"GT"},{name:"Honduras",code:"HN"},
+      {name:"Hong Kong",code:"HK"},{name:"Hungary",code:"HU"},{name:"Iceland",code:"IS"},
+      {name:"India",code:"IN"},{name:"Indonesia",code:"ID"},{name:"Ireland",code:"IE"},
+      {name:"Israel",code:"IL"},{name:"Italy",code:"IT"},{name:"Japan",code:"JP"},
+      {name:"Jordan",code:"JO"},{name:"Kazakhstan",code:"KZ"},{name:"Kuwait",code:"KW"},
+      {name:"Latvia",code:"LV"},{name:"Lebanon",code:"LB"},{name:"Lithuania",code:"LT"},
+      {name:"Luxembourg",code:"LU"},{name:"Malaysia",code:"MY"},{name:"Malta",code:"MT"},
+      {name:"Mexico",code:"MX"},{name:"Moldova",code:"MD"},{name:"Monaco",code:"MC"},
+      {name:"Morocco",code:"MA"},{name:"Netherlands",code:"NL"},{name:"New Zealand",code:"NZ"},
+      {name:"Nicaragua",code:"NI"},{name:"North Macedonia",code:"MK"},{name:"Norway",code:"NO"},
+      {name:"Oman",code:"OM"},{name:"Pakistan",code:"PK"},{name:"Panama",code:"PA"},
+      {name:"Paraguay",code:"PY"},{name:"Peru",code:"PE"},{name:"Philippines",code:"PH"},
+      {name:"Poland",code:"PL"},{name:"Portugal",code:"PT"},{name:"Qatar",code:"QA"},
+      {name:"Romania",code:"RO"},{name:"Russia",code:"RU"},{name:"Saudi Arabia",code:"SA"},
+      {name:"Serbia",code:"RS"},{name:"Singapore",code:"SG"},{name:"Slovakia",code:"SK"},
+      {name:"Slovenia",code:"SI"},{name:"South Africa",code:"ZA"},{name:"South Korea",code:"KR"},
+      {name:"Spain",code:"ES"},{name:"Sri Lanka",code:"LK"},{name:"Sweden",code:"SE"},
+      {name:"Switzerland",code:"CH"},{name:"Taiwan",code:"TW"},{name:"Thailand",code:"TH"},
+      {name:"Turkey",code:"TR"},{name:"Ukraine",code:"UA"},{name:"United Arab Emirates",code:"AE"},
+      {name:"United Kingdom",code:"GB"},{name:"United States",code:"US"},{name:"Uruguay",code:"UY"},
+      {name:"Venezuela",code:"VE"},{name:"Vietnam",code:"VN"}
+    ];
 
-function getCurrentLevel(n){
-for(var i=LEVELS.length-1;i>=0;i–){if(n>=LEVELS[i].min)return i;}
-return 0;
-}
+    var LEVELS = [
+      {label:"Fry Rookie",icon:"🥔",min:0,max:0},
+      {label:"Fry Explorer",icon:"🍟",min:1,max:10},
+      {label:"Fry Fanatic",icon:"🔥",min:11,max:25},
+      {label:"Fry Legend",icon:"👑",min:26,max:50},
+      {label:"Fry Deity",icon:"🏆",min:51,max:111},
+      {label:"Final Fry Boss",icon:"🌟",min:112,max:999}
+    ];
 
-function countryFlag(code){
-if(!code||code.length!==2)return “”;
-var c=code.toUpperCase();
-return String.fromCodePoint(c.charCodeAt(0)+127397)+String.fromCodePoint(c.charCodeAt(1)+127397);
-}
-
-function uploadToCloudinary(file){
-return new Promise(function(resolve,reject){
-var fd=new FormData();
-fd.append(“file”,file);fd.append(“upload_preset”,CLOUDINARY_PRESET);fd.append(“folder”,“hadfries”);
-fetch(“https://api.cloudinary.com/v1_1/”+CLOUDINARY_CLOUD+”/image/upload”,{method:“POST”,body:fd})
-.then(function(r){return r.json();})
-.then(function(d){if(d.secure_url)resolve(d.secure_url);else reject(new Error(“Upload failed”));})
-.catch(reject);
-});
-}
-
-function parseElement(el){
-if(!el||!el.location)return null;
-var lat=el.location.latitude,lng=el.location.longitude;
-if(lat==null||lng==null)return null;
-var comps=el.addressComponents||[];
-function fc(type){for(var i=0;i<comps.length;i++){if((comps[i].types||[]).indexOf(type)!==-1)return comps[i].longText||comps[i].shortText||””;}return “”;}
-return{id:el.id||(“place-”+lat+”-”+lng),name:(el.displayName&&el.displayName.text)||“McDonald’s”,
-address:el.formattedAddress||””,city:fc(“locality”)||fc(“postal_town”)||fc(“administrative_area_level_2”)||””,
-country:fc(“country”)||””,countryCode:fc(“country_code”)||””,lat:lat,lng:lng,hours:””};
-}
-
-function haversine(lat1,lon1,lat2,lon2){
-var R=3958.8,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
-var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
-return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-function fmtDist(mi){if(mi<0.1)return Math.round(mi*5280)+” ft”;if(mi<10)return mi.toFixed(1)+” mi”;return Math.round(mi)+” mi”;}
-
-function readExifGPS(file){
-return new Promise(function(resolve){
-var reader=new FileReader();
-reader.onload=function(e){
-try{
-var buf=e.target.result,view=new DataView(buf);
-if(view.getUint16(0)!==0xFFD8){resolve(null);return;}
-var offset=2;
-while(offset<buf.byteLength-2){
-var marker=view.getUint16(offset);
-if(marker===0xFFE1){
-var exifStr=String.fromCharCode.apply(null,new Uint8Array(buf,offset+4,6));
-if(exifStr.indexOf(“Exif”)===0){
-var to=offset+10,le=view.getUint16(to)===0x4949;
-var ifd0=to+view.getUint32(to+4,le),cnt=view.getUint16(ifd0,le),gpsOff=null;
-for(var i=0;i<cnt;i++){var eo=ifd0+2+i*12;if(view.getUint16(eo,le)===0x8825)gpsOff=to+view.getUint32(eo+8,le);}
-if(!gpsOff){resolve(null);return;}
-var gc=view.getUint16(gpsOff,le),gps={};
-for(var j=0;j<gc;j++){
-var e2=gpsOff+2+j*12,tag=view.getUint16(e2,le),vo=to+view.getUint32(e2+8,le);
-var rat=function(o){return view.getUint32(o,le)/view.getUint32(o+4,le);};
-if(tag===1)gps.latRef=String.fromCharCode(view.getUint8(e2+8));
-if(tag===2)gps.lat=[rat(vo),rat(vo+8),rat(vo+16)];
-if(tag===3)gps.lngRef=String.fromCharCode(view.getUint8(e2+8));
-if(tag===4)gps.lng=[rat(vo),rat(vo+8),rat(vo+16)];
-}
-if(gps.lat&&gps.lng){
-var dms=function(arr){return arr[0]+arr[1]/60+arr[2]/3600;};
-var lat=dms(gps.lat);if(gps.latRef===“S”)lat=-lat;
-var lng=dms(gps.lng);if(gps.lngRef===“W”)lng=-lng;
-resolve({lat:lat,lng:lng});
-}else resolve(null);
-}else resolve(null);return;
-}
-if((marker&0xFF00)!==0xFF00)break;
-offset+=2+view.getUint16(offset+2);
-}
-resolve(null);
-}catch(err){resolve(null);}
-};
-reader.readAsArrayBuffer(file);
-});
-}
-
-var AP=“m 0,0 c 0,0 -1.385,19.868 -4.368,19.868 -3.515,0 -3.675,-18.696 -3.675,-18.696 l -3.276,-0.027 c 0,0 -0.16,18.696 -3.675,18.696 -2.983,0 -4.368,-19.868 -4.368,-19.868 l -3.209,0.014 c 0,0 2.156,21.633 7.763,21.66 3.689,0.018 5.113,-9.317 5.113,-9.317 0,0 2.145,9.335 4.915,9.335 6.658,0 7.989,-21.678 7.989,-21.678 L 0,0 Z”;
-var h=React.createElement;
-function Arches(p){var w=p.width||42;return h(“svg”,{width:w,height:w*0.67,viewBox:”-1092 -1456 3246 2174”},h(“g”,{transform:“matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)”},h(“path”,{d:AP,fill:”#FFC72C”})));}
-function ArchesOutline(p){var w=p.width||22;return h(“svg”,{width:w,height:w*0.67,viewBox:”-1092 -1456 3246 2174”},h(“g”,{transform:“matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)”},h(“path”,{d:AP,fill:”#FFC72C”,stroke:”#27251F”,strokeWidth:“0.15”})));}
-
-function HadFries(){
-var useState=React.useState,useEffect=React.useEffect,useRef=React.useRef,useCallback=React.useCallback;
-var sa=useState(null),authUser=sa[0],setAuthUser=sa[1];
-var sb2=useState(true),authLoading=sb2[0],setAuthLoading=sb2[1];
-var s=useState({}),checkins=s[0],setCheckins=s[1];
-var s2=useState([]),locations=s2[0],setLocations=s2[1];
-var s3=useState(false),loading=s3[0],setLoading=s3[1];
-var s4=useState(null),loadError=s4[0],setLoadError=s4[1];
-var s5=useState(null),userPos=s5[0],setUserPos=s5[1];
-var s6=useState(“prompt”),geoStatus=s6[0],setGeoStatus=s6[1];
-var s7=useState(“nearby”),view=s7[0],setView=s7[1];
-var s8=useState(””),search=s8[0],setSearch=s8[1];
-var s9=useState(25),radius=s9[0],setRadius=s9[1];
-var s10=useState(null),toast=s10[0],setToast=s10[1];
-var s11=useState(null),celebrating=s11[0],setCelebrating=s11[1];
-var s12=useState(false),photoProcessing=s12[0],setPhotoProcessing=s12[1];
-var s13=useState(null),photoResult=s13[0],setPhotoResult=s13[1];
-var s14=useState(null),checkinModal=s14[0],setCheckinModal=s14[1];
-var s15=useState(null),checkinPhoto=s15[0],setCheckinPhoto=s15[1];
-var s16=useState(null),checkinPhotoPreview=s16[0],setCheckinPhotoPreview=s16[1];
-var s17=useState(false),checkinUploading=s17[0],setCheckinUploading=s17[1];
-var s18=useState(null),lightboxUrl=s18[0],setLightboxUrl=s18[1];
-var toastRef=useRef(null);
-var photoInputRef=useRef(null);
-var checkinPhotoRef=useRef(null);
-
-// Auth listener
-useEffect(function(){
-sb.auth.getSession().then(function(res){
-setAuthUser(res.data&&res.data.session?res.data.session.user:null);
-setAuthLoading(false);
-});
-var sub=sb.auth.onAuthStateChange(function(event,session){
-setAuthUser(session?session.user:null);
-setAuthLoading(false);
-});
-return function(){sub.data&&sub.data.subscription&&sub.data.subscription.unsubscribe();};
-},[]);
-
-// Load checkins from Supabase when user logs in
-useEffect(function(){
-if(!authUser)return;
-sb.from(“checkins”).select(”*”).eq(“user_id”,authUser.id)
-.then(function(res){
-if(res.data){
-var map={};
-res.data.forEach(function(row){
-map[row.place_id]={date:row.checked_in_at,name:row.name,city:row.city,
-address:row.address,country:row.country,photo:row.photo_url||null};
-});
-setCheckins(map);
-}
-});
-},[authUser]);
-
-function signInWithGoogle(){
-sb.auth.signInWithOAuth({provider:“google”,options:{redirectTo:window.location.origin}});
-}
-function signOut(){
-sb.auth.signOut();setCheckins({});setAuthUser(null);
-}
-
-var requestGeo=useCallback(function(){
-if(!navigator.geolocation){setGeoStatus(“denied”);return;}
-setGeoStatus(“loading”);
-navigator.geolocation.getCurrentPosition(
-function(pos){setUserPos({lat:pos.coords.latitude,lng:pos.coords.longitude});setGeoStatus(“ok”);},
-function(){setGeoStatus(“denied”);},
-{enableHighAccuracy:true,timeout:15000,maximumAge:0}
-);
-},[]);
-
-function fetchLocations(lat,lng,radiusMi){
-setLoading(true);setLoadError(null);
-fetch(”/api/overpass?lat=”+encodeURIComponent(lat)+”&lng=”+encodeURIComponent(lng)+”&radius=”+encodeURIComponent(radiusMi))
-.then(function(r){return r.text().then(function(t){if(!r.ok)throw new Error(t||“Error”);try{return JSON.parse(t);}catch(e){throw new Error(“Invalid response”);}});})
-.then(function(data){
-var seen={};
-var locs=(data.places||[]).map(parseElement).filter(Boolean).filter(function(l){
-var k=l.lat.toFixed(4)+”,”+l.lng.toFixed(4);if(seen[k])return false;seen[k]=true;return true;
-}).map(function(l){return Object.assign({},l,{dist:haversine(lat,lng,l.lat,l.lng)});})
-.sort(function(a,b){return a.dist-b.dist;}).slice(0,5);
-setLocations(locs);setLoading(false);
-})
-.catch(function(e){setLoadError(e.message||“Could not load locations.”);setLoading(false);});
-}
-
-function handleAddressSearch(){
-if(!search||!search.trim())return;
-setLoading(true);setLoadError(null);
-fetch(”/api/geocode?q=”+encodeURIComponent(search.trim()))
-.then(function(r){return r.text().then(function(t){if(!r.ok)throw new Error(t||“Error”);try{return JSON.parse(t);}catch(e){throw new Error(“Invalid response”);}});})
-.then(function(data){
-if(!data.results||!data.results.length)throw new Error(“Address not found.”);
-var loc=data.results[0].geometry.location;
-setUserPos({lat:loc.lat,lng:loc.lng});setGeoStatus(“ok”);setLoading(false);
-})
-.catch(function(e){setLoadError(e.message||“Could not find address.”);setLoading(false);});
-}
-
-useEffect(function(){if(!userPos)return;fetchLocations(userPos.lat,userPos.lng,radius);},[userPos,radius]);
-
-var withDist=locations.map(function(l){return Object.assign({},l,{dist:userPos?haversine(userPos.lat,userPos.lng,l.lat,l.lng):null});}).sort(function(a,b){return(a.dist||9999)-(b.dist||9999);});
-var filtered=withDist.filter(function(l){if(!search)return true;var q=search.toLowerCase();return l.name.toLowerCase().indexOf(q)!==-1||l.address.toLowerCase().indexOf(q)!==-1||l.city.toLowerCase().indexOf(q)!==-1;});
-
-function showToast(msg,type){if(toastRef.current)clearTimeout(toastRef.current);setToast({msg:msg,type:type||“success”});toastRef.current=setTimeout(function(){setToast(null);},2800);}
-
-function openCheckinModal(loc){
-if(checkins[loc.id]){
-// Remove checkin
-sb.from(“checkins”).delete().eq(“user_id”,authUser.id).eq(“place_id”,loc.id).then(function(){
-setCheckins(function(prev){var n=Object.assign({},prev);delete n[loc.id];return n;});
-showToast(“Removed check-in”,“remove”);
-});
-return;
-}
-setCheckinModal({loc:loc});setCheckinPhoto(null);setCheckinPhotoPreview(null);setCheckinUploading(false);
-}
-
-function handleCheckinPhotoSelect(e){
-var file=e.target.files&&e.target.files[0];if(!file)return;
-setCheckinPhoto(file);
-var reader=new FileReader();reader.onload=function(ev){setCheckinPhotoPreview(ev.target.result);};reader.readAsDataURL(file);
-}
-
-function confirmCheckin(skipPhoto){
-var loc=checkinModal.loc;
-if(skipPhoto||!checkinPhoto){doCheckin(loc,null);setCheckinModal(null);}
-else{
-setCheckinUploading(true);
-uploadToCloudinary(checkinPhoto)
-.then(function(url){doCheckin(loc,url);setCheckinUploading(false);setCheckinModal(null);})
-.catch(function(){doCheckin(loc,null);setCheckinUploading(false);setCheckinModal(null);showToast(“Checked in (photo failed)”,“remove”);});
-}
-}
-
-function doCheckin(loc,photoUrl){
-var now=new Date().toISOString();
-var row={user_id:authUser.id,place_id:loc.id,name:loc.name,city:loc.city,address:loc.address,country:loc.country,photo_url:photoUrl||null,checked_in_at:now};
-sb.from(“checkins”).upsert(row).then(function(){});
-setCheckins(function(prev){var n=Object.assign({},prev);n[loc.id]={date:now,name:loc.name,city:loc.city,address:loc.address,country:loc.country,photo:photoUrl||null};return n;});
-setCelebrating(loc.id);setTimeout(function(){setCelebrating(null);},1200);
-showToast(”\uD83C\uDF5F Had Fries here!”);
-}
-
-function handlePhotoUpload(e){
-var file=e.target.files&&e.target.files[0];if(!file)return;
-setPhotoProcessing(true);setPhotoResult(null);
-var capturedFile=file;
-readExifGPS(file).then(function(gps){
-if(!gps){setPhotoResult({error:“No GPS data found.”});setPhotoProcessing(false);return;}
-fetch(”/api/overpass?lat=”+encodeURIComponent(gps.lat)+”&lng=”+encodeURIComponent(gps.lng)+”&radius=2”)
-.then(function(r){return r.text().then(function(t){if(!r.ok)throw new Error(t||“Error”);try{return JSON.parse(t);}catch(e){throw new Error(“Invalid response”);}});})
-.then(function(data){
-var locs=(data.places||[]).map(parseElement).filter(Boolean);
-if(!locs.length){setPhotoResult({error:“No McDonald’s found near photo location.”});setPhotoProcessing(false);return;}
-var closest=locs.map(function(l){return Object.assign({},l,{dist:haversine(gps.lat,gps.lng,l.lat,l.lng)});}).sort(function(a,b){return a.dist-b.dist;})[0];
-setPhotoResult({loc:closest,gps:gps,file:capturedFile});setPhotoProcessing(false);
-})
-.catch(function(e){setPhotoResult({error:e.message||“Could not look up location.”});setPhotoProcessing(false);});
-e.target.value=””;
-});
-}
-
-function confirmPhotoCheckin(loc,file){
-setPhotoResult(null);
-if(checkins[loc.id]){showToast(“Already checked in here”);return;}
-if(file){
-setCheckinUploading(true);
-uploadToCloudinary(file)
-.then(function(url){doCheckin(loc,url);setCheckinUploading(false);showToast(”\uD83D\uDCF8 Photo check-in: “+loc.name+”!”);})
-.catch(function(){doCheckin(loc,null);setCheckinUploading(false);showToast(”\uD83D\uDCF8 Checked in (photo failed)”);});
-}else{doCheckin(loc,null);showToast(”\uD83D\uDCF8 Photo check-in: “+loc.name+”!”);}
-}
-
-var totalCheckins=Object.keys(checkins).length;
-var currentLevelIdx=getCurrentLevel(totalCheckins);
-var currentLevel=LEVELS[currentLevelIdx];
-var visitedCountries=new Set(Object.values(checkins).map(function(c){return c.country;}).filter(Boolean));
-
-// Show login screen if not authenticated
-if(authLoading){
-return h(“div”,{style:{display:“flex”,alignItems:“center”,justifyContent:“center”,minHeight:“100vh”,background:”#FFC72C”}},
-h(“div”,{className:“hf-spinner”})
-);
-}
-
-if(!authUser){
-return h(“div”,{style:{background:”#FFC72C”,minHeight:“100vh”}},
-h(“div”,{className:“hf-header”},h(“div”,{className:“hf-header-inner”},h(“div”,{className:“hf-logo”},h(Arches,{width:42}),h(“div”,null,h(“div”,{className:“hf-title”},“Had Fries”),h(“div”,{className:“hf-sub”},“World Fry Tracker”))))),
-h(“div”,{className:“hf-login-screen”},
-h(“div”,{className:“hf-login-card”},
-h(“div”,{style:{fontSize:“4rem”,marginBottom:16}},”\uD83C\uDF5F”),
-h(“div”,{style:{fontFamily:”‘Archivo Black’,sans-serif”,fontSize:“1.4rem”,marginBottom:8}},“Had Fries”),
-h(“div”,{style:{color:”#666”,fontSize:“0.88rem”,fontWeight:600,lineHeight:1.6,marginBottom:8}},“Track every McDonald’s you’ve visited around the world. Sign in to save your Fry Trail across all devices.”),
-h(“button”,{className:“hf-google-btn”,onClick:signInWithGoogle},
-h(“svg”,{viewBox:“0 0 24 24”},
-h(“path”,{fill:”#4285F4”,d:“M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z”}),
-h(“path”,{fill:”#34A853”,d:“M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z”}),
-h(“path”,{fill:”#FBBC05”,d:“M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z”}),
-h(“path”,{fill:”#EA4335”,d:“M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z”})
-),
-“Sign in with Google”
-),
-h(“div”,{style:{fontSize:“0.6rem”,color:”#aaa”,marginTop:16,fontWeight:600}},“Had Fries is an unofficial personal family app not affiliated with McDonald’s Corporation.”)
-)
-)
-);
-}
-
-return h(“div”,{style:{fontFamily:”‘Nunito’,sans-serif”,background:”#FFC72C”,minHeight:“100vh”,color:”#27251F”}},
-
-```
-h("div",{className:"hf-header"},
-  h("div",{className:"hf-header-inner"},
-    h("div",{className:"hf-logo"},
-      h(Arches,{width:42}),
-      h("div",null,h("div",{className:"hf-title"},"Had Fries"),h("div",{className:"hf-sub"},"World Fry Tracker"),h("div",{className:"hf-disclaimer"},"Fan app \u00B7 Not affiliated with McDonald's Corporation"))
-    ),
-    h("div",{style:{display:"flex",alignItems:"center",gap:8}},
-      h("div",{className:"hf-badge"},h("div",{className:"hf-badge-num"},totalCheckins),h("div",{className:"hf-badge-lbl"},"Check-ins")),
-      h("button",{className:"hf-user-btn",onClick:signOut},
-        authUser.user_metadata&&authUser.user_metadata.avatar_url
-          ?h("img",{src:authUser.user_metadata.avatar_url,alt:"avatar"})
-          :h("span",null,"\uD83D\uDC64"),
-        "Sign Out"
-      )
-    )
-  ),
-  h("div",{className:"hf-nav"},
-    h("div",{className:"hf-nav-inner"},
-      h("button",{className:"hf-nav-btn"+(view==="nearby"?" active":""),onClick:function(){setView("nearby");}},"📍 Nearby"),
-      h("button",{className:"hf-nav-btn"+(view==="all"?" active":""),onClick:function(){setView("all");}},"📋 All"),
-      h("button",{className:"hf-nav-btn"+(view==="stats"?" active":""),onClick:function(){setView("stats");}},"📊 Stats"),
-      h("button",{className:"hf-nav-btn"+(view==="world"?" active":""),onClick:function(){setView("world");}},"🌍 World")
-    )
-  )
-),
-
-h("div",{className:"hf-photo-bar"},
-  h("div",{className:"hf-photo-bar-inner"},
-    h("button",{className:"hf-photo-btn",onClick:function(){photoInputRef.current&&photoInputRef.current.click();}},"📸 Photo Check-in"),
-    h("input",{ref:photoInputRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handlePhotoUpload}),
-    h("span",{className:"hf-photo-hint"},"Upload a McDonald's photo to auto check-in by GPS")
-  )
-),
-
-geoStatus==="prompt"&&(view==="nearby"||view==="all")&&h("div",{className:"hf-geo-banner"},
-  h("div",{className:"hf-geo-card"},
-    h("div",{className:"hf-geo-icon"},"\uD83C\uDF5F"),
-    h("div",{className:"hf-geo-title"},"Find McDonald's Near You"),
-    h("div",{className:"hf-geo-desc"},"Tap below to find nearby locations."),
-    h("button",{className:"hf-btn-red",onClick:requestGeo},"📍 Use My Location")
-  )
-),
-geoStatus==="loading"&&(view==="nearby"||view==="all")&&h("div",{className:"hf-loading",style:{marginTop:40}},h("div",{className:"hf-spinner"}),h("div",{className:"hf-loading-txt"},"Getting your location...")),
-geoStatus==="denied"&&(view==="nearby"||view==="all")&&h("div",{className:"hf-geo-banner"},
-  h("div",{className:"hf-geo-card"},
-    h("div",{className:"hf-geo-icon"},"\uD83D\uDEAB"),
-    h("div",{className:"hf-geo-title"},"Location Access Denied"),
-    h("div",{className:"hf-geo-desc"},"Please enable location permissions, then tap retry."),
-    h("button",{className:"hf-btn-red",onClick:requestGeo},"Retry")
-  )
-),
-
-geoStatus==="ok"&&(view==="nearby"||view==="all")&&h("div",{className:"hf-controls"},
-  h("div",{className:"hf-controls-inner"},
-    h("input",{className:"hf-search",placeholder:"Search address or filter...",value:search,onChange:function(e){setSearch(e.target.value);},onKeyDown:function(e){if(e.key==="Enter")handleAddressSearch();}}),
-    h("button",{className:"hf-btn-red",onClick:handleAddressSearch},"Search"),
-    view==="nearby"&&h("select",{className:"hf-select",value:radius,onChange:function(e){setRadius(Number(e.target.value));}},
-      [5,10,25,50,100].map(function(r){return h("option",{key:r,value:r},r+" mi");})
-    ),
-    h("button",{className:"hf-geo-pill",onClick:requestGeo},h("span",{className:"hf-geo-dot"})," Update")
-  )
-),
-
-photoProcessing&&h("div",{className:"hf-loading",style:{marginTop:20}},h("div",{className:"hf-spinner"}),h("div",{className:"hf-loading-txt"},"📸 Reading photo location...")),
-checkinUploading&&h("div",{className:"hf-loading",style:{marginTop:20}},h("div",{className:"hf-spinner"}),h("div",{className:"hf-loading-txt"},"Uploading photo...")),
-
-// Photo result modal
-photoResult&&!checkinUploading&&h("div",{className:"hf-modal-overlay",onClick:function(){setPhotoResult(null);}},
-  h("div",{className:"hf-modal",onClick:function(e){e.stopPropagation();}},
-    photoResult.error
-      ?h(React.Fragment,null,h("div",{className:"hf-modal-icon"},"\uD83D\uDE15"),h("div",{className:"hf-modal-title"},"Couldn't Find Location"),h("div",{className:"hf-modal-desc"},photoResult.error),h("button",{className:"hf-btn-red",onClick:function(){setPhotoResult(null);}},"OK"))
-      :h(React.Fragment,null,
-          h("div",{className:"hf-modal-icon"},"\uD83D\uDCCD"),
-          h("div",{className:"hf-modal-title"},"Found It!"),
-          h("div",{className:"hf-modal-desc"},"Your photo was taken near this McDonald's:"),
-          h("div",{className:"hf-modal-loc"},
-            h("div",{className:"hf-modal-loc-name"},photoResult.loc.name),
-            h("div",{className:"hf-modal-loc-addr"},[photoResult.loc.address,photoResult.loc.city].filter(Boolean).join(" \u00B7 ")||"McDonald's location"),
-            h("div",{className:"hf-modal-loc-dist"},"📍 "+fmtDist(photoResult.loc.dist)+" from photo GPS")
-          ),
-          checkins[photoResult.loc.id]
-            ?h(React.Fragment,null,h("div",{style:{color:"#DA0023",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",marginBottom:14}},"\uD83C\uDF5F Already checked in!"),h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Close"))
-            :h("div",{className:"hf-modal-btns"},h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Cancel"),h("button",{className:"hf-btn-red",onClick:function(){confirmPhotoCheckin(photoResult.loc,photoResult.file);}},"✓ Check In + Save Photo!"))
-        )
-  )
-),
-
-// Check-in photo modal
-checkinModal&&!checkinUploading&&h("div",{className:"hf-modal-overlay",onClick:function(){setCheckinModal(null);}},
-  h("div",{className:"hf-modal",onClick:function(e){e.stopPropagation();}},
-    h("div",{className:"hf-modal-icon"},"📍"),
-    h("div",{className:"hf-modal-title"},"Had Fries Here!"),
-    h("div",{className:"hf-modal-loc"},
-      h("div",{className:"hf-modal-loc-name"},checkinModal.loc.name),
-      h("div",{className:"hf-modal-loc-addr"},[checkinModal.loc.address,checkinModal.loc.city].filter(Boolean).join(" \u00B7 ")||"McDonald's location")
-    ),
-    h("div",{className:"hf-modal-desc",style:{marginBottom:12}},"Add a photo to remember this visit!"),
-    checkinPhotoPreview
-      ?h(React.Fragment,null,
-          h("img",{className:"hf-photo-preview",src:checkinPhotoPreview,alt:"preview"}),
-          h("button",{style:{fontSize:"0.72rem",color:"#888",background:"none",border:"none",cursor:"pointer",marginBottom:12},onClick:function(){setCheckinPhoto(null);setCheckinPhotoPreview(null);}},"✕ Remove photo")
-        )
-      :h("div",{className:"hf-photo-upload-area",onClick:function(){checkinPhotoRef.current&&checkinPhotoRef.current.click();}},
-          h("div",{style:{fontSize:"2rem",marginBottom:6}},"📷"),
-          h("div",{style:{fontSize:"0.82rem",fontWeight:700,color:"#555"}},"Tap to add a photo"),
-          h("div",{style:{fontSize:"0.72rem",color:"#aaa",marginTop:4}},"Optional — you can skip")
-        ),
-    h("input",{ref:checkinPhotoRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handleCheckinPhotoSelect}),
-    h("div",{className:"hf-modal-btns"},
-      h("button",{className:"hf-btn-ghost",onClick:function(){setCheckinModal(null);}},"Cancel"),
-      checkinPhotoPreview
-        ?h("button",{className:"hf-btn-red",onClick:function(){confirmCheckin(false);}},"✓ Check In + Upload Photo!")
-        :h(React.Fragment,null,
-            h("button",{style:{background:"#27251F",color:"#FFC72C",border:"3px solid #27251F",borderRadius:10,padding:"10px 16px",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.78rem",cursor:"pointer"},onClick:function(){checkinPhotoRef.current&&checkinPhotoRef.current.click();}},"Add Photo"),
-            h("button",{className:"hf-btn-red",onClick:function(){confirmCheckin(true);}},"Skip & Check In")
-          )
-    )
-  )
-),
-
-loading&&geoStatus==="ok"&&(view==="nearby"||view==="all")&&h("div",{className:"hf-loading",style:{marginTop:40}},h("div",{className:"hf-spinner"}),h("div",{className:"hf-loading-txt"},"Loading nearby McDonald's...")),
-loadError&&!loading&&h("div",{style:{maxWidth:900,margin:"20px auto",padding:"0 16px"}},
-  h("div",{style:{background:"white",border:"3px solid #DA0023",borderRadius:12,padding:20,textAlign:"center"}},
-    h("div",{style:{fontSize:"1.5rem",marginBottom:8}},"\u26A0\uFE0F"),
-    h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"0.9rem",marginBottom:6}},"Couldn't load locations"),
-    h("div",{style:{fontSize:"0.8rem",color:"#666",marginBottom:14}},loadError),
-    h("button",{className:"hf-btn-red",onClick:function(){if(userPos)fetchLocations(userPos.lat,userPos.lng,radius);else requestGeo();}},"Retry")
-  )
-),
-
-// NEARBY
-view==="nearby"&&geoStatus==="ok"&&!loading&&!loadError&&h(React.Fragment,null,
-  filtered.length>0&&h("div",{className:"hf-result-count"},"Showing "+filtered.length+" closest location"+(filtered.length!==1?"s":"")),
-  h("div",{className:"hf-grid"},
-    filtered.length===0
-      ?h("div",{className:"hf-empty"},"No locations found nearby \uD83C\uDF5F")
-      :filtered.map(function(loc){
-          var isChecked=!!checkins[loc.id];
-          return h("div",{key:loc.id,className:"hf-card"+(isChecked?" checked":"")+(celebrating===loc.id?" celebrating":"")},
-            isChecked&&h("div",{className:"hf-stamp"},"\uD83C\uDF5F"),
-            h("div",{className:"hf-card-top"},
-              h("div",{style:{flexShrink:0,display:"flex",alignItems:"center"}},h(Arches,{width:28})),
-              h("div",{className:"hf-card-loc-info"},h("div",{className:"hf-card-name"},loc.name),h("div",{className:"hf-card-addr"},loc.address||loc.city||"McDonald's location")),
-              loc.dist!==null&&h("div",{className:"hf-dist-pill"},fmtDist(loc.dist))
-            ),
-            h("div",{className:"hf-card-bottom"},
-              h("div",{className:"hf-card-meta"},loc.city&&h("div",null,loc.city),isChecked&&checkins[loc.id]&&checkins[loc.id].photo&&h("div",{style:{color:"#4ade80",fontSize:"0.67rem"}},"📷 Photo saved")),
-              h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),onClick:function(){openCheckinModal(loc);}},isChecked?"✓ Had Fries!":"Had Fries?")
-            )
-          );
-        })
-  )
-),
-
-// ALL
-view==="all"&&geoStatus==="ok"&&!loading&&!loadError&&h("div",{className:"hf-list"},
-  filtered.length===0
-    ?h("div",{style:{textAlign:"center",padding:40,fontFamily:"'Archivo Black',sans-serif",opacity:0.5}},"No locations found \uD83C\uDF5F")
-    :filtered.map(function(loc){
-        var isChecked=!!checkins[loc.id];
-        return h("div",{key:loc.id,className:"hf-list-row"+(isChecked?" checked":"")},
-          h(ArchesOutline,{width:22}),
-          h("div",{style:{flex:1,overflow:"hidden"}},h("div",{className:"hf-list-name"},loc.name+(isChecked?" \uD83C\uDF5F":"")),h("div",{className:"hf-list-sub"},[loc.address,loc.city].filter(Boolean).join(" \u00B7 ")||"McDonald's")),
-          loc.dist!==null&&h("div",{style:{fontSize:"0.7rem",fontWeight:700,color:"#DA0023",whiteSpace:"nowrap"}},fmtDist(loc.dist)),
-          h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),style:{fontSize:"0.68rem",padding:"6px 11px"},onClick:function(){openCheckinModal(loc);}},isChecked?"✓ Done":"+ Check In")
-        );
-      })
-),
-
-// STATS
-view==="stats"&&h("div",{className:"hf-stats"},
-  h("div",{className:"hf-stats-hero"},
-    h("div",{style:{fontSize:"0.75rem",color:"rgba(255,255,255,0.7)",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:4}},
-      authUser.user_metadata&&authUser.user_metadata.full_name?authUser.user_metadata.full_name+"'s Stats":"Your Stats"
-    ),
-    h("div",{className:"hf-stats-big"},totalCheckins),
-    h("div",{className:"hf-stats-tag"},totalCheckins===0?"Go get some fries!":totalCheckins===1?"Location conquered":"Locations conquered"),
-    h("div",{className:"hf-stats-rank"},h("span",{className:"hf-rank-chip"},currentLevel.icon+" "+currentLevel.label))
-  ),
-
-  // Level Progress
-  h("div",{className:"hf-progress-wrap"},
-    h("div",{className:"hf-progress-title"},"\uD83C\uDFC6 Level Progress"),
-    LEVELS.map(function(lvl,idx){
-      var done=totalCheckins>lvl.max&&lvl.max!==999;
-      var current=idx===currentLevelIdx;
-      var pct=0;
-      if(done)pct=100;
-      else if(current){
-        if(lvl.max===999)pct=Math.min(100,Math.round((totalCheckins-lvl.min)/(10)*100));
-        else pct=Math.round((totalCheckins-lvl.min)/(lvl.max-lvl.min+1)*100);
+    function getCurrentLevel(n){
+      for(var i=LEVELS.length-1;i>=0;i--){
+        if(n>=LEVELS[i].min) return i;
       }
-      var rangeLabel=lvl.max===999?"112+":lvl.min===0?"0":lvl.min+"-"+lvl.max;
-      return h("div",{key:lvl.label,className:"hf-level-row"+(current?" current":"")+(done?" done":"")},
-        h("div",{className:"hf-level-icon"},lvl.icon),
-        h("div",{className:"hf-level-info"},
-          h("div",{className:"hf-level-name"},lvl.label),
-          h("div",{className:"hf-level-range"},rangeLabel+" check-ins"+(current?" \u2022 "+totalCheckins+(lvl.max!==999?" / "+lvl.max:" check-ins so far!"):"" )),
-          h("div",{className:"hf-level-bar-bg"},h("div",{className:"hf-level-bar-fill",style:{width:pct+"%"}}))
-        ),
-        h("div",{className:"hf-level-check"},done?"\u2705":current?"\uD83D\uDCCD":"")
-      );
-    })
-  ),
+      return 0;
+    }
 
-  h("div",{className:"hf-sgrid"},
-    [{val:totalCheckins,lbl:"Check-ins"},
-     {val:visitedCountries.size,lbl:"Countries"},
-     {val:totalCheckins>0?Math.round((Date.now()-new Date(Object.values(checkins).sort(function(a,b){return new Date(a.date)-new Date(b.date);})[0].date).getTime())/86400000):0,lbl:"Days Active"},
-     {val:currentLevel.icon,lbl:currentLevel.label}]
-    .map(function(s){return h("div",{key:s.lbl,className:"hf-scard"},h("div",{className:"hf-sval"},s.val),h("div",{className:"hf-slbl"},s.lbl));})
-  ),
+    function countryFlag(code){
+      if(!code || code.length!==2) return "";
+      var c = code.toUpperCase();
+      return String.fromCodePoint(c.charCodeAt(0)+127397) + String.fromCodePoint(c.charCodeAt(1)+127397);
+    }
 
-  totalCheckins>0
-    ?h(React.Fragment,null,
-        h("div",{className:"hf-trail-title"},"\uD83C\uDF5F Your Fry Trail"),
-        h("div",{className:"hf-trail"},
-          Object.entries(checkins).slice().reverse().map(function(entry){
-            var id=entry[0],c=entry[1];
-            var countryObj=MCDONALDS_COUNTRIES.find(function(x){return x.name===c.country;});
-            var flag=countryObj?countryFlag(countryObj.code):"";
-            return h("div",{key:id,className:"hf-trail-row"},
-              c.photo?h("img",{className:"hf-trail-thumb",src:c.photo,alt:"visit",onClick:function(){setLightboxUrl(c.photo);}}):h("div",{className:"hf-trail-thumb-empty"},"\uD83C\uDF5F"),
-              h("div",{className:"hf-trail-info"},
-                h("div",{className:"hf-trail-name"},c.name||"McDonald's"),
-                h("div",{className:"hf-trail-loc"},[c.address,c.city].filter(Boolean).join(" \u00B7 ")||"\u2014"),
-                c.country&&h("div",{className:"hf-trail-country"},flag?" "+flag+" "+c.country:c.country)
-              ),
-              h("div",{className:"hf-trail-date"},new Date(c.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}))
-            );
-          })
+    function uploadToCloudinary(file){
+      return new Promise(function(resolve,reject){
+        var fd = new FormData();
+        fd.append("file", file);
+        fd.append("upload_preset", CLOUDINARY_PRESET);
+        fd.append("folder", "hadfries");
+
+        fetch("https://api.cloudinary.com/v1_1/" + CLOUDINARY_CLOUD + "/image/upload", {
+          method: "POST",
+          body: fd
+        })
+        .then(function(r){ return r.json(); })
+        .then(function(d){
+          if(d.secure_url) resolve(d.secure_url);
+          else reject(new Error("Upload failed"));
+        })
+        .catch(reject);
+      });
+    }
+
+    function parseElement(el){
+      if(!el || !el.location) return null;
+
+      var lat = el.location.latitude;
+      var lng = el.location.longitude;
+      if(lat == null || lng == null) return null;
+
+      var comps = el.addressComponents || [];
+
+      function fc(type){
+        for(var i=0;i<comps.length;i++){
+          if((comps[i].types || []).indexOf(type) !== -1){
+            return comps[i].longText || comps[i].shortText || "";
+          }
+        }
+        return "";
+      }
+
+      return {
+        id: el.id || ("place-" + lat + "-" + lng),
+        name: (el.displayName && el.displayName.text) || "McDonald's",
+        address: el.formattedAddress || "",
+        city: fc("locality") || fc("postal_town") || fc("administrative_area_level_2") || "",
+        country: fc("country") || "",
+        countryCode: fc("country_code") || "",
+        lat: lat,
+        lng: lng,
+        hours: ""
+      };
+    }
+
+    function haversine(lat1,lon1,lat2,lon2){
+      var R=3958.8;
+      var dLat=(lat2-lat1)*Math.PI/180;
+      var dLon=(lon2-lon1)*Math.PI/180;
+      var a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+      return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+    }
+
+    function fmtDist(mi){
+      if(mi<0.1) return Math.round(mi*5280)+" ft";
+      if(mi<10) return mi.toFixed(1)+" mi";
+      return Math.round(mi)+" mi";
+    }
+
+    function readExifGPS(file){
+      return new Promise(function(resolve){
+        var reader=new FileReader();
+
+        reader.onload=function(e){
+          try{
+            var buf=e.target.result,view=new DataView(buf);
+            if(view.getUint16(0)!==0xFFD8){resolve(null);return;}
+            var offset=2;
+
+            while(offset<buf.byteLength-2){
+              var marker=view.getUint16(offset);
+
+              if(marker===0xFFE1){
+                var exifStr=String.fromCharCode.apply(null,new Uint8Array(buf,offset+4,6));
+                if(exifStr.indexOf("Exif")===0){
+                  var to=offset+10,le=view.getUint16(to)===0x4949;
+                  var ifd0=to+view.getUint32(to+4,le),cnt=view.getUint16(ifd0,le),gpsOff=null;
+
+                  for(var i=0;i<cnt;i++){
+                    var eo=ifd0+2+i*12;
+                    if(view.getUint16(eo,le)===0x8825) gpsOff=to+view.getUint32(eo+8,le);
+                  }
+
+                  if(!gpsOff){resolve(null);return;}
+
+                  var gc=view.getUint16(gpsOff,le),gps={};
+
+                  for(var j=0;j<gc;j++){
+                    var e2=gpsOff+2+j*12,tag=view.getUint16(e2,le),vo=to+view.getUint32(e2+8,le);
+                    var rat=function(o){return view.getUint32(o,le)/view.getUint32(o+4,le);};
+                    if(tag===1) gps.latRef=String.fromCharCode(view.getUint8(e2+8));
+                    if(tag===2) gps.lat=[rat(vo),rat(vo+8),rat(vo+16)];
+                    if(tag===3) gps.lngRef=String.fromCharCode(view.getUint8(e2+8));
+                    if(tag===4) gps.lng=[rat(vo),rat(vo+8),rat(vo+16)];
+                  }
+
+                  if(gps.lat && gps.lng){
+                    var dms=function(arr){return arr[0]+arr[1]/60+arr[2]/3600;};
+                    var lat=dms(gps.lat); if(gps.latRef==="S") lat=-lat;
+                    var lng=dms(gps.lng); if(gps.lngRef==="W") lng=-lng;
+                    resolve({lat:lat,lng:lng});
+                  } else {
+                    resolve(null);
+                  }
+                } else {
+                  resolve(null);
+                }
+                return;
+              }
+
+              if((marker&0xFF00)!==0xFF00) break;
+              offset+=2+view.getUint16(offset+2);
+            }
+
+            resolve(null);
+          }catch(err){
+            resolve(null);
+          }
+        };
+
+        reader.readAsArrayBuffer(file);
+      });
+    }
+
+    var AP="m 0,0 c 0,0 -1.385,19.868 -4.368,19.868 -3.515,0 -3.675,-18.696 -3.675,-18.696 l -3.276,-0.027 c 0,0 -0.16,18.696 -3.675,18.696 -2.983,0 -4.368,-19.868 -4.368,-19.868 l -3.209,0.014 c 0,0 2.156,21.633 7.763,21.66 3.689,0.018 5.113,-9.317 5.113,-9.317 0,0 2.145,9.335 4.915,9.335 6.658,0 7.989,-21.678 7.989,-21.678 L 0,0 Z";
+    var h=React.createElement;
+
+    function Arches(p){
+      var w=p.width||42;
+      return h("svg",{width:w,height:w*0.67,viewBox:"-1092 -1456 3246 2174"},
+        h("g",{transform:"matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)"},
+          h("path",{d:AP,fill:"#FFC72C"})
         )
-      )
-    :h("div",{style:{background:"white",border:"3px solid #27251F",borderRadius:12,padding:32,textAlign:"center"}},
-        h("div",{style:{fontSize:"3rem",marginBottom:10}},"\uD83C\uDF5F"),
-        h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"1rem"}},"No check-ins yet!"),
-        h("div",{style:{color:"#888",fontSize:"0.82rem",marginTop:6,fontWeight:600}},"Head to Nearby to start your fry journey.")
-      ),
-  h("div",{style:{marginTop:24,padding:"12px 16px",background:"rgba(0,0,0,0.08)",borderRadius:8,fontSize:"0.62rem",color:"rgba(39,37,31,0.55)",fontWeight:600,lineHeight:1.6,textAlign:"center"}},
-    "Had Fries is an unofficial personal family app not affiliated with McDonald's Corporation. The McDonald's name and Golden Arches are registered trademarks of McDonald's Corporation."
-  )
-),
-
-// WORLD MAP
-view==="world"&&h("div",{style:{maxWidth:900,margin:"0 auto",padding:"16px"}},
-  h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"\uD83C\uDF0D McDonald's Countries"),
-  h("div",{style:{fontSize:"0.75rem",color:"#27251F",opacity:0.6,fontWeight:700,marginBottom:12}},visitedCountries.size+" of "+MCDONALDS_COUNTRIES.length+" countries visited"),
-  h("div",{className:"hf-countries-grid"},
-    MCDONALDS_COUNTRIES.map(function(c){
-      var visited=visitedCountries.has(c.name);
-      return h("div",{key:c.code,className:"hf-country-row"+(visited?" visited":"")},
-        h("div",{className:"hf-country-flag"},countryFlag(c.code)),
-        h("div",{className:"hf-country-name"},c.name),
-        visited&&h("div",{className:"hf-country-check"},"\uD83C\uDF5F")
       );
-    })
-  )
-),
+    }
 
-// Lightbox
-lightboxUrl&&h("div",{className:"hf-lightbox",onClick:function(){setLightboxUrl(null);}},
-  h("span",{className:"hf-lightbox-close"},"×"),
-  h("img",{src:lightboxUrl,alt:"full photo",onClick:function(e){e.stopPropagation();}})
-),
+    function ArchesOutline(p){
+      var w=p.width||22;
+      return h("svg",{width:w,height:w*0.67,viewBox:"-1092 -1456 3246 2174"},
+        h("g",{transform:"matrix(100.30839,0,0,-100.30839,1352.5669,717.15149)"},
+          h("path",{d:AP,fill:"#FFC72C",stroke:"#27251F",strokeWidth:"0.15"})
+        )
+      );
+    }
 
-h("div",{className:"hf-toast"+(toast?" show":"")+(toast&&toast.type==="remove"?" remove":"")},toast&&toast.msg)
-```
+    function HadFries(){
+      var useState=React.useState,useEffect=React.useEffect,useRef=React.useRef,useCallback=React.useCallback;
 
-);
-}
-var root=ReactDOM.createRoot(document.getElementById(“root”));
-root.render(React.createElement(HadFries,null));
-</script>
+      var sa=useState(null),authUser=sa[0],setAuthUser=sa[1];
+      var sb2=useState(true),authLoading=sb2[0],setAuthLoading=sb2[1];
+      var s=useState({}),checkins=s[0],setCheckins=s[1];
+      var s2=useState([]),locations=s2[0],setLocations=s2[1];
+      var s3=useState(false),loading=s3[0],setLoading=s3[1];
+      var s4=useState(null),loadError=s4[0],setLoadError=s4[1];
+      var s5=useState(null),userPos=s5[0],setUserPos=s5[1];
+      var s6=useState("prompt"),geoStatus=s6[0],setGeoStatus=s6[1];
+      var s7=useState("nearby"),view=s7[0],setView=s7[1];
+      var s8=useState(""),search=s8[0],setSearch=s8[1];
+      var s9=useState(25),radius=s9[0],setRadius=s9[1];
+      var s10=useState(null),toast=s10[0],setToast=s10[1];
+      var s11=useState(null),celebrating=s11[0],setCelebrating=s11[1];
+      var s12=useState(false),photoProcessing=s12[0],setPhotoProcessing=s12[1];
+      var s13=useState(null),photoResult=s13[0],setPhotoResult=s13[1];
+      var s14=useState(null),checkinModal=s14[0],setCheckinModal=s14[1];
+      var s15=useState(null),checkinPhoto=s15[0],setCheckinPhoto=s15[1];
+      var s16=useState(null),checkinPhotoPreview=s16[0],setCheckinPhotoPreview=s16[1];
+      var s17=useState(false),checkinUploading=s17[0],setCheckinUploading=s17[1];
+      var s18=useState(null),lightboxUrl=s18[0],setLightboxUrl=s18[1];
 
+      var toastRef=useRef(null);
+      var photoInputRef=useRef(null);
+      var checkinPhotoRef=useRef(null);
+
+      useEffect(function(){
+        sb.auth.getSession().then(function(res){
+          setAuthUser(res.data&&res.data.session?res.data.session.user:null);
+          setAuthLoading(false);
+        });
+
+        var sub=sb.auth.onAuthStateChange(function(event,session){
+          setAuthUser(session?session.user:null);
+          setAuthLoading(false);
+        });
+
+        return function(){
+          if(sub && sub.data && sub.data.subscription){
+            sub.data.subscription.unsubscribe();
+          }
+        };
+      },[]);
+
+      useEffect(function(){
+        if(!authUser) return;
+
+        sb.from("checkins").select("*").eq("user_id",authUser.id).then(function(res){
+          if(res.data){
+            var map={};
+            res.data.forEach(function(row){
+              map[row.place_id]={
+                date:row.checked_in_at,
+                name:row.name,
+                city:row.city,
+                address:row.address,
+                country:row.country,
+                photo:row.photo_url||null
+              };
+            });
+            setCheckins(map);
+          }
+        });
+      },[authUser]);
+
+      function signInWithGoogle(){
+        sb.auth.signInWithOAuth({
+          provider:"google",
+          options:{redirectTo:window.location.origin}
+        });
+      }
+
+      function signOut(){
+        sb.auth.signOut();
+        setCheckins({});
+        setAuthUser(null);
+      }
+
+      var requestGeo=useCallback(function(){
+        if(!navigator.geolocation){
+          setGeoStatus("denied");
+          return;
+        }
+
+        setGeoStatus("loading");
+        navigator.geolocation.getCurrentPosition(
+          function(pos){
+            setUserPos({lat:pos.coords.latitude,lng:pos.coords.longitude});
+            setGeoStatus("ok");
+          },
+          function(){
+            setGeoStatus("denied");
+          },
+          {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+        );
+      },[]);
+
+      function fetchLocations(lat,lng,radiusMi){
+        setLoading(true);
+        setLoadError(null);
+
+        fetch("/api/overpass?lat="+encodeURIComponent(lat)+"&lng="+encodeURIComponent(lng)+"&radius="+encodeURIComponent(radiusMi))
+          .then(function(r){
+            return r.text().then(function(t){
+              if(!r.ok) throw new Error(t||"Error");
+              try{return JSON.parse(t);}catch(e){throw new Error("Invalid response");}
+            });
+          })
+          .then(function(data){
+            var seen={};
+            var locs=(data.places||[])
+              .map(parseElement)
+              .filter(Boolean)
+              .filter(function(l){
+                var k=l.lat.toFixed(4)+","+l.lng.toFixed(4);
+                if(seen[k]) return false;
+                seen[k]=true;
+                return true;
+              })
+              .map(function(l){
+                return Object.assign({},l,{dist:haversine(lat,lng,l.lat,l.lng)});
+              })
+              .sort(function(a,b){return a.dist-b.dist;})
+              .slice(0,5);
+
+            setLocations(locs);
+            setLoading(false);
+          })
+          .catch(function(e){
+            setLoadError(e.message||"Could not load locations.");
+            setLoading(false);
+          });
+      }
+
+      function handleAddressSearch(){
+        if(!search || !search.trim()) return;
+
+        setLoading(true);
+        setLoadError(null);
+
+        fetch("/api/geocode?q="+encodeURIComponent(search.trim()))
+          .then(function(r){
+            return r.text().then(function(t){
+              if(!r.ok) throw new Error(t||"Error");
+              try{return JSON.parse(t);}catch(e){throw new Error("Invalid response");}
+            });
+          })
+          .then(function(data){
+            if(!data.results || !data.results.length) throw new Error("Address not found.");
+            var loc=data.results[0].geometry.location;
+            setUserPos({lat:loc.lat,lng:loc.lng});
+            setGeoStatus("ok");
+            setLoading(false);
+          })
+          .catch(function(e){
+            setLoadError(e.message||"Could not find address.");
+            setLoading(false);
+          });
+      }
+
+      useEffect(function(){
+        if(!userPos) return;
+        fetchLocations(userPos.lat,userPos.lng,radius);
+      },[userPos,radius]);
+
+      var withDist=locations.map(function(l){
+        return Object.assign({},l,{dist:userPos?haversine(userPos.lat,userPos.lng,l.lat,l.lng):null});
+      }).sort(function(a,b){return (a.dist||9999)-(b.dist||9999);});
+
+      var filtered=withDist.filter(function(l){
+        if(!search) return true;
+        var q=search.toLowerCase();
+        return l.name.toLowerCase().indexOf(q)!==-1 || l.address.toLowerCase().indexOf(q)!==-1 || l.city.toLowerCase().indexOf(q)!==-1;
+      });
+
+      function showToast(msg,type){
+        if(toastRef.current) clearTimeout(toastRef.current);
+        setToast({msg:msg,type:type||"success"});
+        toastRef.current=setTimeout(function(){setToast(null);},2800);
+      }
+
+      function openCheckinModal(loc){
+        if(checkins[loc.id]){
+          sb.from("checkins").delete().eq("user_id",authUser.id).eq("place_id",loc.id).then(function(){
+            setCheckins(function(prev){
+              var n=Object.assign({},prev);
+              delete n[loc.id];
+              return n;
+            });
+            showToast("Removed check-in","remove");
+          });
+          return;
+        }
+
+        setCheckinModal({loc:loc});
+        setCheckinPhoto(null);
+        setCheckinPhotoPreview(null);
+        setCheckinUploading(false);
+      }
+
+      function handleCheckinPhotoSelect(e){
+        var file=e.target.files&&e.target.files[0];
+        if(!file) return;
+        setCheckinPhoto(file);
+
+        var reader=new FileReader();
+        reader.onload=function(ev){setCheckinPhotoPreview(ev.target.result);};
+        reader.readAsDataURL(file);
+      }
+
+      function doCheckin(loc,photoUrl){
+        var now=new Date().toISOString();
+        var row={
+          user_id:authUser.id,
+          place_id:loc.id,
+          name:loc.name,
+          city:loc.city,
+          address:loc.address,
+          country:loc.country,
+          photo_url:photoUrl||null,
+          checked_in_at:now
+        };
+
+        sb.from("checkins").upsert(row).then(function(){});
+
+        setCheckins(function(prev){
+          var n=Object.assign({},prev);
+          n[loc.id]={
+            date:now,
+            name:loc.name,
+            city:loc.city,
+            address:loc.address,
+            country:loc.country,
+            photo:photoUrl||null
+          };
+          return n;
+        });
+
+        setCelebrating(loc.id);
+        setTimeout(function(){setCelebrating(null);},1200);
+        showToast("🍟 Had Fries here!");
+      }
+
+      function confirmCheckin(skipPhoto){
+        var loc=checkinModal.loc;
+
+        if(skipPhoto || !checkinPhoto){
+          doCheckin(loc,null);
+          setCheckinModal(null);
+          return;
+        }
+
+        setCheckinUploading(true);
+        uploadToCloudinary(checkinPhoto)
+          .then(function(url){
+            doCheckin(loc,url);
+            setCheckinUploading(false);
+            setCheckinModal(null);
+          })
+          .catch(function(){
+            doCheckin(loc,null);
+            setCheckinUploading(false);
+            setCheckinModal(null);
+            showToast("Checked in (photo failed)","remove");
+          });
+      }
+
+      function handlePhotoUpload(e){
+        var file=e.target.files&&e.target.files[0];
+        if(!file) return;
+
+        setPhotoProcessing(true);
+        setPhotoResult(null);
+
+        var capturedFile=file;
+
+        readExifGPS(file).then(function(gps){
+          if(!gps){
+            setPhotoResult({error:"No GPS data found."});
+            setPhotoProcessing(false);
+            return;
+          }
+
+          fetch("/api/overpass?lat="+encodeURIComponent(gps.lat)+"&lng="+encodeURIComponent(gps.lng)+"&radius=2")
+            .then(function(r){
+              return r.text().then(function(t){
+                if(!r.ok) throw new Error(t||"Error");
+                try{return JSON.parse(t);}catch(e){throw new Error("Invalid response");}
+              });
+            })
+            .then(function(data){
+              var locs=(data.places||[]).map(parseElement).filter(Boolean);
+              if(!locs.length){
+                setPhotoResult({error:"No McDonald's found near photo location."});
+                setPhotoProcessing(false);
+                return;
+              }
+
+              var closest=locs
+                .map(function(l){return Object.assign({},l,{dist:haversine(gps.lat,gps.lng,l.lat,l.lng)});})
+                .sort(function(a,b){return a.dist-b.dist;})[0];
+
+              setPhotoResult({loc:closest,gps:gps,file:capturedFile});
+              setPhotoProcessing(false);
+            })
+            .catch(function(e){
+              setPhotoResult({error:e.message||"Could not look up location."});
+              setPhotoProcessing(false);
+            });
+
+          e.target.value="";
+        });
+      }
+
+      function confirmPhotoCheckin(loc,file){
+        setPhotoResult(null);
+
+        if(checkins[loc.id]){
+          showToast("Already checked in here");
+          return;
+        }
+
+        if(file){
+          setCheckinUploading(true);
+          uploadToCloudinary(file)
+            .then(function(url){
+              doCheckin(loc,url);
+              setCheckinUploading(false);
+              showToast("📸 Photo check-in: "+loc.name+"!");
+            })
+            .catch(function(){
+              doCheckin(loc,null);
+              setCheckinUploading(false);
+              showToast("📸 Checked in (photo failed)");
+            });
+        } else {
+          doCheckin(loc,null);
+          showToast("📸 Photo check-in: "+loc.name+"!");
+        }
+      }
+
+      var totalCheckins=Object.keys(checkins).length;
+      var currentLevelIdx=getCurrentLevel(totalCheckins);
+      var currentLevel=LEVELS[currentLevelIdx];
+      var visitedCountries=new Set(Object.values(checkins).map(function(c){return c.country;}).filter(Boolean));
+
+      if(authLoading){
+        return h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:"#FFC72C"}},
+          h("div",{className:"hf-spinner"})
+        );
+      }
+
+      if(!authUser){
+        return h("div",{style:{background:"#FFC72C",minHeight:"100vh"}},
+          h("div",{className:"hf-header"},
+            h("div",{className:"hf-header-inner"},
+              h("div",{className:"hf-logo"},
+                h(Arches,{width:42}),
+                h("div",null,
+                  h("div",{className:"hf-title"},"Had Fries"),
+                  h("div",{className:"hf-sub"},"World Fry Tracker")
+                )
+              )
+            )
+          ),
+          h("div",{className:"hf-login-screen"},
+            h("div",{className:"hf-login-card"},
+              h("div",{style:{fontSize:"4rem",marginBottom:16}},"🍟"),
+              h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"1.4rem",marginBottom:8}},"Had Fries"),
+              h("div",{style:{color:"#666",fontSize:"0.88rem",fontWeight:600,lineHeight:1.6,marginBottom:8}},
+                "Track every McDonald's you've visited around the world. Sign in to save your Fry Trail across all devices."
+              ),
+              h("button",{className:"hf-google-btn",onClick:signInWithGoogle},
+                h("svg",{viewBox:"0 0 24 24"},
+                  h("path",{fill:"#4285F4",d:"M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"}),
+                  h("path",{fill:"#34A853",d:"M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"}),
+                  h("path",{fill:"#FBBC05",d:"M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"}),
+                  h("path",{fill:"#EA4335",d:"M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"})
+                ),
+                "Sign in with Google"
+              ),
+              h("div",{style:{fontSize:"0.6rem",color:"#aaa",marginTop:16,fontWeight:600}},
+                "Had Fries is an unofficial personal family app not affiliated with McDonald's Corporation."
+              )
+            )
+          )
+        );
+      }
+
+      return h("div",{style:{fontFamily:"'Nunito',sans-serif",background:"#FFC72C",minHeight:"100vh",color:"#27251F"}},
+        h("div",{className:"hf-header"},
+          h("div",{className:"hf-header-inner"},
+            h("div",{className:"hf-logo"},
+              h(Arches,{width:42}),
+              h("div",null,
+                h("div",{className:"hf-title"},"Had Fries"),
+                h("div",{className:"hf-sub"},"World Fry Tracker"),
+                h("div",{className:"hf-disclaimer"},"Fan app · Not affiliated with McDonald's Corporation")
+              )
+            ),
+            h("div",{style:{display:"flex",alignItems:"center",gap:8}},
+              h("div",{className:"hf-badge"},
+                h("div",{className:"hf-badge-num"},totalCheckins),
+                h("div",{className:"hf-badge-lbl"},"Check-ins")
+              ),
+              h("button",{className:"hf-user-btn",onClick:signOut},
+                authUser.user_metadata&&authUser.user_metadata.avatar_url
+                  ? h("img",{src:authUser.user_metadata.avatar_url,alt:"avatar"})
+                  : h("span",null,"👤"),
+                "Sign Out"
+              )
+            )
+          ),
+          h("div",{className:"hf-nav"},
+            h("div",{className:"hf-nav-inner"},
+              h("button",{className:"hf-nav-btn"+(view==="nearby"?" active":""),onClick:function(){setView("nearby");}},"📍 Nearby"),
+              h("button",{className:"hf-nav-btn"+(view==="all"?" active":""),onClick:function(){setView("all");}},"📋 All"),
+              h("button",{className:"hf-nav-btn"+(view==="stats"?" active":""),onClick:function(){setView("stats");}},"📊 Stats"),
+              h("button",{className:"hf-nav-btn"+(view==="world"?" active":""),onClick:function(){setView("world");}},"🌍 World")
+            )
+          )
+        ),
+
+        h("div",{className:"hf-photo-bar"},
+          h("div",{className:"hf-photo-bar-inner"},
+            h("button",{className:"hf-photo-btn",onClick:function(){if(photoInputRef.current) photoInputRef.current.click();}},"📸 Photo Check-in"),
+            h("input",{ref:photoInputRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handlePhotoUpload}),
+            h("span",{className:"hf-photo-hint"},"Upload a McDonald's photo to auto check-in by GPS")
+          )
+        ),
+
+        geoStatus==="prompt" && (view==="nearby"||view==="all") && h("div",{className:"hf-geo-banner"},
+          h("div",{className:"hf-geo-card"},
+            h("div",{className:"hf-geo-icon"},"🍟"),
+            h("div",{className:"hf-geo-title"},"Find McDonald's Near You"),
+            h("div",{className:"hf-geo-desc"},"Tap below to find nearby locations."),
+            h("button",{className:"hf-btn-red",onClick:requestGeo},"📍 Use My Location")
+          )
+        ),
+
+        geoStatus==="loading" && (view==="nearby"||view==="all") && h("div",{className:"hf-loading",style:{marginTop:40}},
+          h("div",{className:"hf-spinner"}),
+          h("div",{className:"hf-loading-txt"},"Getting your location...")
+        ),
+
+        geoStatus==="denied" && (view==="nearby"||view==="all") && h("div",{className:"hf-geo-banner"},
+          h("div",{className:"hf-geo-card"},
+            h("div",{className:"hf-geo-icon"},"🚫"),
+            h("div",{className:"hf-geo-title"},"Location Access Denied"),
+            h("div",{className:"hf-geo-desc"},"Please enable location permissions, then tap retry."),
+            h("button",{className:"hf-btn-red",onClick:requestGeo},"Retry")
+          )
+        ),
+
+        geoStatus==="ok" && (view==="nearby"||view==="all") && h("div",{className:"hf-controls"},
+          h("div",{className:"hf-controls-inner"},
+            h("input",{
+              className:"hf-search",
+              placeholder:"Search address or filter...",
+              value:search,
+              onChange:function(e){setSearch(e.target.value);},
+              onKeyDown:function(e){if(e.key==="Enter") handleAddressSearch();}
+            }),
+            h("button",{className:"hf-btn-red",onClick:handleAddressSearch},"Search"),
+            view==="nearby" && h("select",{className:"hf-select",value:radius,onChange:function(e){setRadius(Number(e.target.value));}},
+              [5,10,25,50,100].map(function(r){return h("option",{key:r,value:r},r+" mi");})
+            ),
+            h("button",{className:"hf-geo-pill",onClick:requestGeo},
+              h("span",{className:"hf-geo-dot"}),
+              " Update"
+            )
+          )
+        ),
+
+        photoProcessing && h("div",{className:"hf-loading",style:{marginTop:20}},
+          h("div",{className:"hf-spinner"}),
+          h("div",{className:"hf-loading-txt"},"📸 Reading photo location...")
+        ),
+
+        checkinUploading && h("div",{className:"hf-loading",style:{marginTop:20}},
+          h("div",{className:"hf-spinner"}),
+          h("div",{className:"hf-loading-txt"},"Uploading photo...")
+        ),
+
+        photoResult && !checkinUploading && h("div",{className:"hf-modal-overlay",onClick:function(){setPhotoResult(null);}},
+          h("div",{className:"hf-modal",onClick:function(e){e.stopPropagation();}},
+            photoResult.error
+              ? h(React.Fragment,null,
+                  h("div",{className:"hf-modal-icon"},"😕"),
+                  h("div",{className:"hf-modal-title"},"Couldn't Find Location"),
+                  h("div",{className:"hf-modal-desc"},photoResult.error),
+                  h("button",{className:"hf-btn-red",onClick:function(){setPhotoResult(null);}},"OK")
+                )
+              : h(React.Fragment,null,
+                  h("div",{className:"hf-modal-icon"},"📍"),
+                  h("div",{className:"hf-modal-title"},"Found It!"),
+                  h("div",{className:"hf-modal-desc"},"Your photo was taken near this McDonald's:"),
+                  h("div",{className:"hf-modal-loc"},
+                    h("div",{className:"hf-modal-loc-name"},photoResult.loc.name),
+                    h("div",{className:"hf-modal-loc-addr"},[photoResult.loc.address,photoResult.loc.city].filter(Boolean).join(" · ")||"McDonald's location"),
+                    h("div",{className:"hf-modal-loc-dist"},"📍 "+fmtDist(photoResult.loc.dist)+" from photo GPS")
+                  ),
+                  checkins[photoResult.loc.id]
+                    ? h(React.Fragment,null,
+                        h("div",{style:{color:"#DA0023",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",marginBottom:14}},"🍟 Already checked in!"),
+                        h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Close")
+                      )
+                    : h("div",{className:"hf-modal-btns"},
+                        h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Cancel"),
+                        h("button",{className:"hf-btn-red",onClick:function(){confirmPhotoCheckin(photoResult.loc,photoResult.file);}},"✓ Check In + Save Photo!")
+                      )
+                )
+          )
+        ),
+
+        checkinModal && !checkinUploading && h("div",{className:"hf-modal-overlay",onClick:function(){setCheckinModal(null);}},
+          h("div",{className:"hf-modal",onClick:function(e){e.stopPropagation();}},
+            h("div",{className:"hf-modal-icon"},"📍"),
+            h("div",{className:"hf-modal-title"},"Had Fries Here!"),
+            h("div",{className:"hf-modal-loc"},
+              h("div",{className:"hf-modal-loc-name"},checkinModal.loc.name),
+              h("div",{className:"hf-modal-loc-addr"},[checkinModal.loc.address,checkinModal.loc.city].filter(Boolean).join(" · ")||"McDonald's location")
+            ),
+            h("div",{className:"hf-modal-desc",style:{marginBottom:12}},"Add a photo to remember this visit!"),
+
+            checkinPhotoPreview
+              ? h(React.Fragment,null,
+                  h("img",{className:"hf-photo-preview",src:checkinPhotoPreview,alt:"preview"}),
+                  h("button",{
+                    style:{fontSize:"0.72rem",color:"#888",background:"none",border:"none",cursor:"pointer",marginBottom:12},
+                    onClick:function(){setCheckinPhoto(null);setCheckinPhotoPreview(null);}
+                  },"✕ Remove photo")
+                )
+              : h("div",{className:"hf-photo-upload-area",onClick:function(){if(checkinPhotoRef.current) checkinPhotoRef.current.click();}},
+                  h("div",{style:{fontSize:"2rem",marginBottom:6}},"📷"),
+                  h("div",{style:{fontSize:"0.82rem",fontWeight:700,color:"#555"}},"Tap to add a photo"),
+                  h("div",{style:{fontSize:"0.72rem",color:"#aaa",marginTop:4}},"Optional — you can skip")
+                ),
+
+            h("input",{ref:checkinPhotoRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handleCheckinPhotoSelect}),
+
+            h("div",{className:"hf-modal-btns"},
+              h("button",{className:"hf-btn-ghost",onClick:function(){setCheckinModal(null);}},"Cancel"),
+              checkinPhotoPreview
+                ? h("button",{className:"hf-btn-red",onClick:function(){confirmCheckin(false);}},"✓ Check In + Upload Photo!")
+                : h(React.Fragment,null,
+                    h("button",{
+                      style:{background:"#27251F",color:"#FFC72C",border:"3px solid #27251F",borderRadius:10,padding:"10px 16px",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.78rem",cursor:"pointer"},
+                      onClick:function(){if(checkinPhotoRef.current) checkinPhotoRef.current.click();}
+                    },"Add Photo"),
+                    h("button",{className:"hf-btn-red",onClick:function(){confirmCheckin(true);}},"Skip & Check In")
+                  )
+            )
+          )
+        ),
+
+        loading && geoStatus==="ok" && (view==="nearby"||view==="all") && h("div",{className:"hf-loading",style:{marginTop:40}},
+          h("div",{className:"hf-spinner"}),
+          h("div",{className:"hf-loading-txt"},"Loading nearby McDonald's...")
+        ),
+
+        loadError && !loading && h("div",{style:{maxWidth:900,margin:"20px auto",padding:"0 16px"}},
+          h("div",{style:{background:"white",border:"3px solid #DA0023",borderRadius:12,padding:20,textAlign:"center"}},
+            h("div",{style:{fontSize:"1.5rem",marginBottom:8}},"⚠️"),
+            h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"0.9rem",marginBottom:6}},"Couldn't load locations"),
+            h("div",{style:{fontSize:"0.8rem",color:"#666",marginBottom:14}},loadError),
+            h("button",{className:"hf-btn-red",onClick:function(){if(userPos) fetchLocations(userPos.lat,userPos.lng,radius); else requestGeo();}},"Retry")
+          )
+        ),
+
+        view==="nearby" && geoStatus==="ok" && !loading && !loadError && h(React.Fragment,null,
+          filtered.length>0 && h("div",{className:"hf-result-count"},"Showing "+filtered.length+" closest location"+(filtered.length!==1?"s":"")),
+          h("div",{className:"hf-grid"},
+            filtered.length===0
+              ? h("div",{className:"hf-empty"},"No locations found nearby 🍟")
+              : filtered.map(function(loc){
+                  var isChecked=!!checkins[loc.id];
+                  return h("div",{key:loc.id,className:"hf-card"+(isChecked?" checked":"")+(celebrating===loc.id?" celebrating":"")},
+                    isChecked && h("div",{className:"hf-stamp"},"🍟"),
+                    h("div",{className:"hf-card-top"},
+                      h("div",{style:{flexShrink:0,display:"flex",alignItems:"center"}},h(Arches,{width:28})),
+                      h("div",{className:"hf-card-loc-info"},
+                        h("div",{className:"hf-card-name"},loc.name),
+                        h("div",{className:"hf-card-addr"},loc.address||loc.city||"McDonald's location")
+                      ),
+                      loc.dist!==null && h("div",{className:"hf-dist-pill"},fmtDist(loc.dist))
+                    ),
+                    h("div",{className:"hf-card-bottom"},
+                      h("div",{className:"hf-card-meta"},
+                        loc.city && h("div",null,loc.city),
+                        isChecked && checkins[loc.id] && checkins[loc.id].photo && h("div",{style:{color:"#4ade80",fontSize:"0.67rem"}},"📷 Photo saved")
+                      ),
+                      h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),onClick:function(){openCheckinModal(loc);}},
+                        isChecked ? "✓ Had Fries!" : "Had Fries?"
+                      )
+                    )
+                  );
+                })
+          )
+        ),
+
+        view==="all" && geoStatus==="ok" && !loading && !loadError && h("div",{className:"hf-list"},
+          filtered.length===0
+            ? h("div",{style:{textAlign:"center",padding:40,fontFamily:"'Archivo Black',sans-serif",opacity:0.5}},"No locations found 🍟")
+            : filtered.map(function(loc){
+                var isChecked=!!checkins[loc.id];
+                return h("div",{key:loc.id,className:"hf-list-row"+(isChecked?" checked":"")},
+                  h(ArchesOutline,{width:22}),
+                  h("div",{style:{flex:1,overflow:"hidden"}},
+                    h("div",{className:"hf-list-name"},loc.name+(isChecked?" 🍟":"")),
+                    h("div",{className:"hf-list-sub"},[loc.address,loc.city].filter(Boolean).join(" · ")||"McDonald's")
+                  ),
+                  loc.dist!==null && h("div",{style:{fontSize:"0.7rem",fontWeight:700,color:"#DA0023",whiteSpace:"nowrap"}},fmtDist(loc.dist)),
+                  h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),style:{fontSize:"0.68rem",padding:"6px 11px"},onClick:function(){openCheckinModal(loc);}},
+                    isChecked ? "✓ Done" : "+ Check In"
+                  )
+                );
+              })
+        ),
+
+        view==="stats" && h("div",{className:"hf-stats"},
+          h("div",{className:"hf-stats-hero"},
+            h("div",{style:{fontSize:"0.75rem",color:"rgba(255,255,255,0.7)",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:4}},
+              authUser.user_metadata&&authUser.user_metadata.full_name ? authUser.user_metadata.full_name+"'s Stats" : "Your Stats"
+            ),
+            h("div",{className:"hf-stats-big"},totalCheckins),
+            h("div",{className:"hf-stats-tag"},totalCheckins===0?"Go get some fries!":totalCheckins===1?"Location conquered":"Locations conquered"),
+            h("div",{className:"hf-stats-rank"},h("span",{className:"hf-rank-chip"},currentLevel.icon+" "+currentLevel.label))
+          ),
+
+          h("div",{className:"hf-progress-wrap"},
+            h("div",{className:"hf-progress-title"},"🏆 Level Progress"),
+            LEVELS.map(function(lvl,idx){
+              var done=totalCheckins>lvl.max && lvl.max!==999;
+              var current=idx===currentLevelIdx;
+              var pct=0;
+
+              if(done) pct=100;
+              else if(current){
+                if(lvl.max===999) pct=Math.min(100,Math.round((totalCheckins-lvl.min)/10*100));
+                else pct=Math.round((totalCheckins-lvl.min)/(lvl.max-lvl.min+1)*100);
+              }
+
+              var rangeLabel=lvl.max===999 ? "112+" : (lvl.min===0 ? "0" : lvl.min+"-"+lvl.max);
+
+              return h("div",{key:lvl.label,className:"hf-level-row"+(current?" current":"")+(done?" done":"")},
+                h("div",{className:"hf-level-icon"},lvl.icon),
+                h("div",{className:"hf-level-info"},
+                  h("div",{className:"hf-level-name"},lvl.label),
+                  h("div",{className:"hf-level-range"},
+                    rangeLabel+" check-ins"+(current ? " • "+totalCheckins+(lvl.max!==999 ? " / "+lvl.max : " check-ins so far!") : "")
+                  ),
+                  h("div",{className:"hf-level-bar-bg"},
+                    h("div",{className:"hf-level-bar-fill",style:{width:pct+"%"}})
+                  )
+                ),
+                h("div",{className:"hf-level-check"},done?"✅":(current?"📍":""))
+              );
+            })
+          ),
+
+          h("div",{className:"hf-sgrid"},
+            [
+              {val:totalCheckins,lbl:"Check-ins"},
+              {val:visitedCountries.size,lbl:"Countries"},
+              {val:totalCheckins>0?Math.round((Date.now()-new Date(Object.values(checkins).sort(function(a,b){return new Date(a.date)-new Date(b.date);})[0].date).getTime())/86400000):0,lbl:"Days Active"},
+              {val:currentLevel.icon,lbl:currentLevel.label}
+            ].map(function(sv){
+              return h("div",{key:sv.lbl,className:"hf-scard"},
+                h("div",{className:"hf-sval"},sv.val),
+                h("div",{className:"hf-slbl"},sv.lbl)
+              );
+            })
+          ),
+
+          totalCheckins>0
+            ? h(React.Fragment,null,
+                h("div",{className:"hf-trail-title"},"🍟 Your Fry Trail"),
+                h("div",{className:"hf-trail"},
+                  Object.entries(checkins).slice().reverse().map(function(entry){
+                    var id=entry[0],c=entry[1];
+                    var countryObj=MCDONALDS_COUNTRIES.find(function(x){return x.name===c.country;});
+                    var flag=countryObj?countryFlag(countryObj.code):"";
+
+                    return h("div",{key:id,className:"hf-trail-row"},
+                      c.photo
+                        ? h("img",{className:"hf-trail-thumb",src:c.photo,alt:"visit",onClick:function(){setLightboxUrl(c.photo);}})
+                        : h("div",{className:"hf-trail-thumb-empty"},"🍟"),
+                      h("div",{className:"hf-trail-info"},
+                        h("div",{className:"hf-trail-name"},c.name||"McDonald's"),
+                        h("div",{className:"hf-trail-loc"},[c.address,c.city].filter(Boolean).join(" · ")||"—"),
+                        c.country && h("div",{className:"hf-trail-country"},flag ? (flag+" "+c.country) : c.country)
+                      ),
+                      h("div",{className:"hf-trail-date"},new Date(c.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}))
+                    );
+                  })
+                )
+              )
+            : h("div",{style:{background:"white",border:"3px solid #27251F",borderRadius:12,padding:32,textAlign:"center"}},
+                h("div",{style:{fontSize:"3rem",marginBottom:10}},"🍟"),
+                h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"1rem"}},"No check-ins yet!"),
+                h("div",{style:{color:"#888",fontSize:"0.82rem",marginTop:6,fontWeight:600}},"Head to Nearby to start your fry journey.")
+              ),
+
+          h("div",{style:{marginTop:24,padding:"12px 16px",background:"rgba(0,0,0,0.08)",borderRadius:8,fontSize:"0.62rem",color:"rgba(39,37,31,0.55)",fontWeight:600,lineHeight:1.6,textAlign:"center"}},
+            "Had Fries is an unofficial personal family app not affiliated with McDonald's Corporation. The McDonald's name and Golden Arches are registered trademarks of McDonald's Corporation."
+          )
+        ),
+
+        view==="world" && h("div",{style:{maxWidth:900,margin:"0 auto",padding:"16px"}},
+          h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"🌍 McDonald's Countries"),
+          h("div",{style:{fontSize:"0.75rem",color:"#27251F",opacity:0.6,fontWeight:700,marginBottom:12}},
+            visitedCountries.size+" of "+MCDONALDS_COUNTRIES.length+" countries visited"
+          ),
+          h("div",{className:"hf-countries-grid"},
+            MCDONALDS_COUNTRIES.map(function(c){
+              var visited=visitedCountries.has(c.name);
+              return h("div",{key:c.code,className:"hf-country-row"+(visited?" visited":"")},
+                h("div",{className:"hf-country-flag"},countryFlag(c.code)),
+                h("div",{className:"hf-country-name"},c.name),
+                visited && h("div",{className:"hf-country-check"},"🍟")
+              );
+            })
+          )
+        ),
+
+        lightboxUrl && h("div",{className:"hf-lightbox",onClick:function(){setLightboxUrl(null);}},
+          h("span",{className:"hf-lightbox-close"},"×"),
+          h("img",{src:lightboxUrl,alt:"full photo",onClick:function(e){e.stopPropagation();}})
+        ),
+
+        h("div",{className:"hf-toast"+(toast?" show":"")+(toast&&toast.type==="remove"?" remove":"")},toast&&toast.msg)
+      );
+    }
+
+    var root=ReactDOM.createRoot(document.getElementById("root"));
+    root.render(React.createElement(HadFries,null));
+  </script>
 </body>
 </html>
