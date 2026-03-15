@@ -300,7 +300,7 @@
 
     function loadVisitDetails(){
       try{
-        return JSON.parse(localStorage.getItem(VISIT_DETAILS_KEY)||"{}");
+        return JSON.parse(localStorage.getItem(VISIT_DETAILS_KEY) || "{}");
       }catch(e){
         return {};
       }
@@ -308,7 +308,7 @@
 
     function saveVisitDetails(data){
       try{
-        localStorage.setItem(VISIT_DETAILS_KEY, JSON.stringify(data||{}));
+        localStorage.setItem(VISIT_DETAILS_KEY, JSON.stringify(data || {}));
       }catch(e){}
     }
 
@@ -428,10 +428,29 @@
       return new Promise(function(resolve){
         var reader=new FileReader();
 
+        function readAscii(view, offset, count){
+          var s="";
+          for(var i=0;i<count;i++){
+            var ch=view.getUint8(offset+i);
+            if(ch===0) break;
+            s+=String.fromCharCode(ch);
+          }
+          return s;
+        }
+
+        function parseExifDate(str){
+          if(!str) return null;
+          var m = str.match(/^(\d{4}):(\d{2}):(\d{2})\s+(\d{2}):(\d{2}):(\d{2})$/);
+          if(!m) return null;
+          var d = new Date(m[1]+"-"+m[2]+"-"+m[3]+"T"+m[4]+":"+m[5]+":"+m[6]);
+          if(isNaN(d.getTime())) return null;
+          return d.toISOString();
+        }
+
         reader.onload=function(e){
           try{
-            var buf=e.target.result,view=new DataView(buf);
-            if(view.getUint16(0)!==0xFFD8){resolve(null);return;}
+            var buf=e.target.result, view=new DataView(buf);
+            if(view.getUint16(0)!==0xFFD8){ resolve(null); return; }
             var offset=2;
 
             while(offset<buf.byteLength-2){
@@ -440,43 +459,75 @@
               if(marker===0xFFE1){
                 var exifStr=String.fromCharCode.apply(null,new Uint8Array(buf,offset+4,6));
                 if(exifStr.indexOf("Exif")===0){
-                  var to=offset+10,le=view.getUint16(to)===0x4949;
-                  var ifd0=to+view.getUint32(to+4,le),cnt=view.getUint16(ifd0,le),gpsOff=null;
+                  var to=offset+10;
+                  var le=view.getUint16(to)===0x4949;
+                  var ifd0=to+view.getUint32(to+4,le);
+                  var cnt=view.getUint16(ifd0,le);
+                  var gpsOff=null;
+                  var exifIfdOff=null;
+                  var takenAt=null;
 
                   for(var i=0;i<cnt;i++){
                     var eo=ifd0+2+i*12;
-                    if(view.getUint16(eo,le)===0x8825) gpsOff=to+view.getUint32(eo+8,le);
+                    var tag=view.getUint16(eo,le);
+                    if(tag===0x8825) gpsOff=to+view.getUint32(eo+8,le);
+                    if(tag===0x8769) exifIfdOff=to+view.getUint32(eo+8,le);
+                    if(tag===0x0132){
+                      var count=view.getUint32(eo+4,le);
+                      var valueOffset = count<=4 ? (eo+8) : (to+view.getUint32(eo+8,le));
+                      takenAt = parseExifDate(readAscii(view, valueOffset, count));
+                    }
                   }
 
-                  if(!gpsOff){resolve(null);return;}
+                  if(exifIfdOff){
+                    var exifCnt=view.getUint16(exifIfdOff,le);
+                    for(var k=0;k<exifCnt;k++){
+                      var ee=exifIfdOff+2+k*12;
+                      var exifTag=view.getUint16(ee,le);
+                      if(exifTag===0x9003 || exifTag===0x9004){
+                        var exifCount=view.getUint32(ee+4,le);
+                        var exifValOffset = exifCount<=4 ? (ee+8) : (to+view.getUint32(ee+8,le));
+                        var parsed = parseExifDate(readAscii(view, exifValOffset, exifCount));
+                        if(parsed){
+                          takenAt = parsed;
+                          break;
+                        }
+                      }
+                    }
+                  }
 
-                  var gc=view.getUint16(gpsOff,le),gps={};
+                  if(!gpsOff){
+                    resolve(takenAt ? {lat:null,lng:null,takenAt:takenAt} : null);
+                    return;
+                  }
+
+                  var gc=view.getUint16(gpsOff,le), gps={takenAt:takenAt};
 
                   for(var j=0;j<gc;j++){
-                    var e2=gpsOff+2+j*12,tag=view.getUint16(e2,le),vo=to+view.getUint32(e2+8,le);
+                    var e2=gpsOff+2+j*12, tag2=view.getUint16(e2,le), vo=to+view.getUint32(e2+8,le);
                     var rat=function(o){return view.getUint32(o,le)/view.getUint32(o+4,le);};
-                    if(tag===1) gps.latRef=String.fromCharCode(view.getUint8(e2+8));
-                    if(tag===2) gps.lat=[rat(vo),rat(vo+8),rat(vo+16)];
-                    if(tag===3) gps.lngRef=String.fromCharCode(view.getUint8(e2+8));
-                    if(tag===4) gps.lng=[rat(vo),rat(vo+8),rat(vo+16)];
+                    if(tag2===1) gps.latRef=String.fromCharCode(view.getUint8(e2+8));
+                    if(tag2===2) gps.lat=[rat(vo),rat(vo+8),rat(vo+16)];
+                    if(tag2===3) gps.lngRef=String.fromCharCode(view.getUint8(e2+8));
+                    if(tag2===4) gps.lng=[rat(vo),rat(vo+8),rat(vo+16)];
                   }
 
                   if(gps.lat && gps.lng){
                     var dms=function(arr){return arr[0]+arr[1]/60+arr[2]/3600;};
                     var lat=dms(gps.lat); if(gps.latRef==="S") lat=-lat;
                     var lng=dms(gps.lng); if(gps.lngRef==="W") lng=-lng;
-                    resolve({lat:lat,lng:lng});
-                  } else {
-                    resolve(null);
+                    resolve({lat:lat,lng:lng,takenAt:takenAt||null});
+                  }else{
+                    resolve(takenAt ? {lat:null,lng:null,takenAt:takenAt} : null);
                   }
-                } else {
+                }else{
                   resolve(null);
                 }
                 return;
               }
 
               if((marker&0xFF00)!==0xFF00) break;
-              offset+=2+view.getUint16(offset+2);
+              offset += 2 + view.getUint16(offset+2);
             }
 
             resolve(null);
@@ -694,13 +745,14 @@
         toastRef.current=setTimeout(function(){setToast(null);},2800);
       }
 
-      function openVisitModal(loc, forceNew){
+      function openVisitModal(loc, forceNew, photoTakenAt){
         var existingCheckin = checkins[loc.id];
         var detail = getVisitDetail(loc.id);
 
         setVisitModal({
           loc:loc,
-          isEditing:!!existingCheckin && !forceNew
+          isEditing:!!existingCheckin && !forceNew,
+          photoTakenAt:photoTakenAt || null
         });
 
         setVisitForm({
@@ -736,8 +788,15 @@
         });
       }
 
-      function saveCheckinRecord(loc, photoUrl){
-        var now = (checkins[loc.id] && checkins[loc.id].date) ? checkins[loc.id].date : new Date().toISOString();
+      function saveCheckinRecord(loc, photoUrl, visitDate){
+        var when;
+        if(checkins[loc.id] && checkins[loc.id].date){
+          when = checkins[loc.id].date;
+        }else if(visitDate){
+          when = visitDate;
+        }else{
+          when = new Date().toISOString();
+        }
 
         var row={
           user_id:authUser.id,
@@ -747,7 +806,7 @@
           address:loc.address,
           country:normalizeCountryName(loc.country),
           photo_url:photoUrl||null,
-          checked_in_at:now
+          checked_in_at:when
         };
 
         sb.from("checkins").upsert(row).then(function(){});
@@ -755,7 +814,7 @@
         setCheckins(function(prev){
           var n=Object.assign({},prev);
           n[loc.id]={
-            date:now,
+            date:when,
             name:loc.name,
             city:loc.city,
             address:loc.address,
@@ -789,12 +848,19 @@
         }
 
         function finishSave(finalPhotoUrl){
-          saveCheckinRecord(loc, finalPhotoUrl);
+          var dateToUse = null;
+          if(!checkins[loc.id] && visitModal && visitModal.photoTakenAt){
+            dateToUse = visitModal.photoTakenAt;
+          }
+
+          saveCheckinRecord(loc, finalPhotoUrl, dateToUse);
+
           upsertVisitDetails(loc.id, {
             rating: rating,
             price_usd: price,
             notes: notes
           });
+
           setCelebrating(loc.id);
           setTimeout(function(){setCelebrating(null);},1200);
           setVisitModal(null);
@@ -844,7 +910,7 @@
         var capturedFile=file;
 
         readExifGPS(file).then(function(gps){
-          if(!gps){
+          if(!gps || gps.lat == null || gps.lng == null){
             setPhotoResult({error:"No GPS data found."});
             setPhotoProcessing(false);
             return;
@@ -882,8 +948,9 @@
       }
 
       function confirmPhotoCheckin(loc,file){
+        var takenAt = photoResult && photoResult.gps ? photoResult.gps.takenAt : null;
         setPhotoResult(null);
-        openVisitModal(loc, true);
+        openVisitModal(loc, true, takenAt);
 
         if(file){
           setVisitPhoto(file);
@@ -900,7 +967,10 @@
       var filtered=withDist.filter(function(l){
         if(!filterText) return true;
         var q=filterText.toLowerCase();
-        return l.name.toLowerCase().indexOf(q)!==-1 || l.address.toLowerCase().indexOf(q)!==-1 || l.city.toLowerCase().indexOf(q)!==-1 || l.country.toLowerCase().indexOf(q)!==-1;
+        return l.name.toLowerCase().indexOf(q)!==-1 ||
+               l.address.toLowerCase().indexOf(q)!==-1 ||
+               l.city.toLowerCase().indexOf(q)!==-1 ||
+               l.country.toLowerCase().indexOf(q)!==-1;
       });
 
       var totalCheckins=Object.keys(checkins).length;
@@ -1286,7 +1356,7 @@
                   Object.entries(checkins).slice().sort(function(a,b){
                     return new Date(b[1].date) - new Date(a[1].date);
                   }).map(function(entry){
-                    var id=entry[0],c=entry[1];
+                    var id=entry[0], c=entry[1];
                     var detail = getVisitDetail(id);
                     var countryObj=COUNTRY_COUNTS.find(function(x){return x.name===normalizeCountryName(c.country);});
                     var flag=countryObj?countryFlag(countryObj.code):"";
@@ -1300,13 +1370,32 @@
                         h("div",{className:"hf-trail-loc"},[c.address,c.city].filter(Boolean).join(" · ")||"—"),
                         c.country && h("div",{className:"hf-trail-country"},flag ? (flag+" "+normalizeCountryName(c.country)) : normalizeCountryName(c.country)),
                         h("div",{className:"hf-trail-extra"},
-                          (detail.rating ? "⭐ "+detail.rating+"/5" : ""),
-                          (detail.rating && detail.price_usd ? " · " : ""),
+                          (detail.rating ? "⭐ "+detail.rating+"/5" : "") +
+                          (detail.rating && detail.price_usd ? " · " : "") +
                           (detail.price_usd ? "💵 $" + Number(detail.price_usd).toFixed(2) : "")
                         ),
                         detail.notes ? h("div",{className:"hf-trail-notes"},detail.notes) : null
                       ),
-                      h("div",{className:"hf-trail-date"},new Date(c.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}))
+                      h("div",{style:{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:"8px",flexShrink:0}},
+                        h("div",{className:"hf-trail-date"},
+                          new Date(c.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"})
+                        ),
+                        h("button",{
+                          className:"hf-checkin-btn yes",
+                          style:{fontSize:"0.65rem",padding:"6px 10px"},
+                          onClick:function(){
+                            openVisitModal({
+                              id:id,
+                              name:c.name||"McDonald's",
+                              address:c.address||"",
+                              city:c.city||"",
+                              country:c.country||"",
+                              lat:null,
+                              lng:null
+                            });
+                          }
+                        },"Edit")
+                      )
                     );
                   })
                 )
