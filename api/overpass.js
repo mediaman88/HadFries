@@ -1,64 +1,74 @@
-const https = require("https");
+const https = require('https');
 
-module.exports = function(req,res){
+module.exports = function (req, res) {
+  const lat = parseFloat(req.query.lat);
+  const lng = parseFloat(req.query.lng);
+  const radiusMiles = parseFloat(req.query.radius || '25');
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-const lat=parseFloat(req.query.lat);
-const lng=parseFloat(req.query.lng);
-const radius=parseFloat(req.query.radius||25);
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-const key=process.env.GOOGLE_MAPS_API_KEY;
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
+  }
 
-if(!lat||!lng){
-res.status(400).json({error:"Missing lat/lng"});
-return;
-}
+  if (!apiKey) {
+    return res.status(500).json({ error: 'Missing GOOGLE_MAPS_API_KEY' });
+  }
 
-const meters=Math.round(radius*1609.34);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+    return res.status(400).json({ error: 'Missing or invalid lat/lng' });
+  }
 
-const body=JSON.stringify({
-textQuery:"McDonald's",
-maxResultCount:20,
-locationBias:{
-circle:{
-center:{latitude:lat,longitude:lng},
-radius:meters
-}
-}
-});
+  const radiusMeters = Math.round(radiusMiles * 1609.34);
 
-const options={
-hostname:"places.googleapis.com",
-path:"/v1/places:searchText",
-method:"POST",
-headers:{
-"Content-Type":"application/json",
-"X-Goog-Api-Key":key,
-"X-Goog-FieldMask":"places.id,places.displayName,places.formattedAddress,places.location"
-}
+  const body = JSON.stringify({
+    textQuery: "McDonald's",
+    maxResultCount: 20,
+    languageCode: 'en',
+    locationBias: {
+      circle: {
+        center: {
+          latitude: lat,
+          longitude: lng
+        },
+        radius: radiusMeters
+      }
+    }
+  });
+
+  const options = {
+    hostname: 'places.googleapis.com',
+    path: '/v1/places:searchText',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Content-Length': Buffer.byteLength(body),
+      'X-Goog-Api-Key': apiKey,
+      'X-Goog-FieldMask':
+        'places.id,places.displayName,places.formattedAddress,places.location,places.addressComponents'
+    }
+  };
+
+  const upstreamReq = https.request(options, (upstreamRes) => {
+    let data = '';
+
+    upstreamRes.on('data', (chunk) => {
+      data += chunk;
+    });
+
+    upstreamRes.on('end', () => {
+      res.setHeader('Content-Type', 'application/json');
+      res.status(upstreamRes.statusCode || 500).end(data);
+    });
+  });
+
+  upstreamReq.on('error', (err) => {
+    res.status(500).json({ error: err.message });
+  });
+
+  upstreamReq.write(body);
+  upstreamReq.end();
 };
-
-const r=https.request(options,function(up){
-
-let data="";
-
-up.on("data",c=>data+=c);
-
-up.on("end",function(){
-
-res.setHeader("Access-Control-Allow-Origin","*");
-res.setHeader("Content-Type","application/json");
-
-res.status(up.statusCode||200).end(data);
-
-});
-
-});
-
-r.on("error",e=>{
-res.status(500).json({error:e.message});
-});
-
-r.write(body);
-r.end();
-
-}
