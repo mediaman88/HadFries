@@ -188,27 +188,56 @@ function parseElement(el){
 }
   function readExifGPS(file){
   return new Promise(function(resolve){
-    var reader = new FileReader();
-
-    reader.onload = function(e){
-      var img = new Image();
-
-      img.onload = function(){
+    var reader=new FileReader();
+    reader.onload=function(e){
+      try{
+        var buf=e.target.result,view=new DataView(buf);
+        if(view.getUint16(0)!==0xFFD8){resolve(null);return;}
+        var offset=2;
+        while(offset<buf.byteLength-2){
+          var marker=view.getUint16(offset);
+          if(marker===0xFFE1){
+            var exifStr=String.fromCharCode.apply(null,new Uint8Array(buf,offset+4,6));
+            if(exifStr.indexOf("Exif")===0){
+              var to=offset+10,le=view.getUint16(to)===0x4949;
+              var ifd0=to+view.getUint32(to+4,le),cnt=view.getUint16(ifd0,le);
+              var gpsOff=null;
+              for(var i=0;i<cnt;i++){
+                var eo=ifd0+2+i*12;
+                if(view.getUint16(eo,le)===0x8825)gpsOff=to+view.getUint32(eo+8,le);
+              }
+              if(!gpsOff){resolve(null);return;}
+              var gc=view.getUint16(gpsOff,le),gps={};
+              for(var j=0;j<gc;j++){
+                var e2=gpsOff+2+j*12,tag=view.getUint16(e2,le),vo=to+view.getUint32(e2+8,le);
+                var rat=function(o){return view.getUint32(o,le)/view.getUint32(o+4,le);};
+                if(tag===1)gps.latRef=String.fromCharCode(view.getUint8(e2+8));
+                if(tag===2)gps.lat=[rat(vo),rat(vo+8),rat(vo+16)];
+                if(tag===3)gps.lngRef=String.fromCharCode(view.getUint8(e2+8));
+                if(tag===4)gps.lng=[rat(vo),rat(vo+8),rat(vo+16)];
+              }
+              if(gps.lat&&gps.lng){
+                var dms=function(arr){return arr[0]+arr[1]/60+arr[2]/3600;};
+                var lat=dms(gps.lat);if(gps.latRef==="S")lat=-lat;
+                var lng=dms(gps.lng);if(gps.lngRef==="W")lng=-lng;
+                resolve({lat:lat,lng:lng});
+              }else{
+                resolve(null);
+              }
+            }else{
+              resolve(null);
+            }
+            return;
+          }
+          if((marker&0xFF00)!==0xFF00)break;
+          offset+=2+view.getUint16(offset+2);
+        }
         resolve(null);
-      };
-
-      img.onerror = function(){
+      }catch(err){
         resolve(null);
-      };
-
-      img.src = e.target.result;
+      }
     };
-
-    reader.onerror = function(){
-      resolve(null);
-    };
-
-    reader.readAsDataURL(file);
+    reader.readAsArrayBuffer(file);
   });
 }
 var AP="m 0,0 c 0,0 -1.385,19.868 -4.368,19.868 -3.515,0 -3.675,-18.696 -3.675,-18.696 l -3.276,-0.027 c 0,0 -0.16,18.696 -3.675,18.696 -2.983,0 -4.368,-19.868 -4.368,-19.868 l -3.209,0.014 c 0,0 2.156,21.633 7.763,21.66 3.689,0.018 5.113,-9.317 5.113,-9.317 0,0 2.145,9.335 4.915,9.335 6.658,0 7.989,-21.678 7.989,-21.678 L 0,0 Z";
@@ -432,10 +461,6 @@ function HadFries(){
           setPhotoResult({loc:closest,gps:gps});
           setPhotoProcessing(false);
         })
-        .catch(function(e){
-          setPhotoResult({error:e.message || "Could not look up location. Check your connection."});
-          setPhotoProcessing(false);
-        });
         .catch(function(e){
           setPhotoResult({error:e.message || "Could not look up location. Check your connection."});
           setPhotoProcessing(false);
