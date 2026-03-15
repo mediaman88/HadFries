@@ -20,7 +20,7 @@
     .hf-title{color:white;font-size:1.4rem;font-family:'Archivo Black',sans-serif;text-shadow:2px 2px 0 #27251F;line-height:1}
     .hf-sub{color:#FFC72C;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase}
     .hf-disclaimer{color:rgba(255,199,44,0.6);font-size:0.45rem;font-weight:600;letter-spacing:1px;margin-top:1px}
-    .hf-badge{background:#FFC72C;border:3px solid #27251F;border-radius:10px;padding:5px 12px;text-align:center;min-width:80px}
+    .hf-badge{background:#FFC72C;border:3px solid #27251F;border-radius:10px;padding:5px 12px;text-align:center;min-width:90px}
     .hf-badge-num{font-size:1.4rem;font-family:'Archivo Black',sans-serif;color:#DA0023;line-height:1}
     .hf-badge-lbl{font-size:0.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase}
     .hf-user-btn{background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.4);border-radius:8px;padding:6px 10px;color:white;font-size:0.72rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px}
@@ -42,6 +42,9 @@
     .hf-geo-desc{color:#666;font-size:0.85rem;font-weight:600;margin-bottom:18px;line-height:1.5}
     .hf-btn-red{background:#DA0023;color:white;border:3px solid #27251F;border-radius:10px;padding:11px 24px;font-family:'Archivo Black',sans-serif;font-size:0.85rem;letter-spacing:1px;cursor:pointer}
     .hf-btn-red:hover{background:#b5001d}
+    .hf-btn-dark{background:#27251F;color:#FFC72C;border:3px solid #27251F;border-radius:10px;padding:11px 18px;font-family:'Archivo Black',sans-serif;font-size:0.82rem;letter-spacing:1px;cursor:pointer}
+    .hf-btn-dark:hover{opacity:0.92}
+    .hf-btn-danger{background:white;color:#DA0023;border:3px solid #DA0023;border-radius:10px;padding:10px 18px;font-family:'Archivo Black',sans-serif;font-size:0.8rem;cursor:pointer}
     .hf-controls{background:#FFC72C;padding:12px 16px;border-bottom:3px solid #27251F}
     .hf-controls-inner{max-width:900px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .hf-search{flex:1;min-width:180px;padding:9px 14px;border:3px solid #27251F;border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:700;background:white;outline:none}
@@ -51,7 +54,7 @@
     .hf-geo-dot{width:8px;height:8px;background:#4ade80;border-radius:50%;animation:pulse 2s infinite;display:inline-block}
     @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
     .hf-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
-    .hf-modal{background:white;border:4px solid #27251F;border-radius:16px;padding:28px;max-width:420px;width:100%;text-align:center;box-shadow:8px 8px 0 #27251F;max-height:90vh;overflow-y:auto}
+    .hf-modal{background:white;border:4px solid #27251F;border-radius:16px;padding:28px;max-width:460px;width:100%;text-align:center;box-shadow:8px 8px 0 #27251F;max-height:90vh;overflow-y:auto}
     .hf-modal-icon{font-size:3rem;margin-bottom:12px}
     .hf-modal-title{font-family:'Archivo Black',sans-serif;font-size:1.1rem;margin-bottom:8px}
     .hf-modal-desc{color:#666;font-size:0.82rem;font-weight:600;margin-bottom:20px;line-height:1.6}
@@ -123,12 +126,15 @@
     .hf-trail-name{font-weight:800;font-size:0.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .hf-trail-loc{color:#888;font-size:0.7rem;font-weight:600;margin-top:2px}
     .hf-trail-country{font-size:0.75rem;font-weight:700;color:#DA0023;margin-top:2px}
+    .hf-trail-extra{font-size:0.72rem;color:#444;font-weight:700;margin-top:4px;line-height:1.5}
+    .hf-trail-notes{font-size:0.72rem;color:#666;font-weight:600;margin-top:4px;line-height:1.4;white-space:normal}
     .hf-trail-date{font-size:0.65rem;color:#aaa;font-weight:600;white-space:nowrap;flex-shrink:0}
-    .hf-countries-grid{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+    .hf-countries-grid{background:white;border:3px solid #27251F;border-radius:12px;overflow:hidden;display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}
     .hf-country-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid #f5f5f5;border-right:1px solid #f5f5f5}
     .hf-country-row.visited{background:#FFF8E7}
     .hf-country-flag{font-size:1.2rem;flex-shrink:0}
-    .hf-country-name{font-size:0.75rem;font-weight:700;flex:1}
+    .hf-country-name{font-size:0.75rem;font-weight:800;flex:1}
+    .hf-country-count{font-size:0.7rem;color:#666;font-weight:700}
     .hf-country-check{font-size:0.8rem}
     .hf-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#27251F;color:white;padding:11px 22px;border-radius:999px;font-weight:700;font-size:0.88rem;border:3px solid #FFC72C;z-index:999;transition:transform 0.3s cubic-bezier(.22,1,.36,1);white-space:nowrap;box-shadow:0 8px 24px rgba(0,0,0,0.25)}
     .hf-toast.show{transform:translateX(-50%) translateY(0)}
@@ -145,7 +151,17 @@
     .hf-google-btn{display:flex;align-items:center;justify-content:center;gap:10px;background:white;border:3px solid #27251F;border-radius:10px;padding:12px 24px;font-family:'Archivo Black',sans-serif;font-size:0.9rem;cursor:pointer;width:100%;transition:all 0.12s;margin-top:20px}
     .hf-google-btn:hover{background:#f5f5f5;transform:scale(1.02)}
     .hf-google-btn svg{width:20px;height:20px;flex-shrink:0}
-    @media(max-width:600px){.hf-title{font-size:1.1rem}.hf-stats-big{font-size:3.5rem}}
+    .hf-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+    .hf-input,.hf-textarea{width:100%;padding:10px 12px;border:3px solid #27251F;border-radius:10px;font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:700;background:white;outline:none}
+    .hf-textarea{min-height:88px;resize:vertical}
+    .hf-input:focus,.hf-textarea:focus{border-color:#DA0023}
+    .hf-field-label{display:block;text-align:left;font-size:0.72rem;font-weight:900;letter-spacing:1px;text-transform:uppercase;color:#666;margin-bottom:6px}
+    .hf-section-note{max-width:900px;margin:10px auto 0;padding:0 16px;font-size:0.7rem;font-weight:700;color:#27251F;opacity:0.65}
+    @media(max-width:600px){
+      .hf-title{font-size:1.1rem}
+      .hf-stats-big{font-size:3.5rem}
+      .hf-form-grid{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
@@ -156,39 +172,121 @@
     var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0d21oZ2RsZHVobWRmZnp6enhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM1Mzg0NzAsImV4cCI6MjA4OTExNDQ3MH0.qAsXddB7DOqlipekvxEmHRM2MNPtKkNvHGXPWW8TyKw";
     var CLOUDINARY_CLOUD = "dysvuqynm";
     var CLOUDINARY_PRESET = "HadFries";
+    var VISIT_DETAILS_KEY = "hadfries-visit-details-v2";
     var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    var MCDONALDS_COUNTRIES = [
-      {name:"Argentina",code:"AR"},{name:"Australia",code:"AU"},{name:"Austria",code:"AT"},
-      {name:"Azerbaijan",code:"AZ"},{name:"Bahrain",code:"BH"},{name:"Belarus",code:"BY"},
-      {name:"Belgium",code:"BE"},{name:"Bosnia and Herzegovina",code:"BA"},{name:"Brazil",code:"BR"},
-      {name:"Bulgaria",code:"BG"},{name:"Canada",code:"CA"},{name:"Chile",code:"CL"},
-      {name:"China",code:"CN"},{name:"Colombia",code:"CO"},{name:"Costa Rica",code:"CR"},
-      {name:"Croatia",code:"HR"},{name:"Cyprus",code:"CY"},{name:"Czech Republic",code:"CZ"},
-      {name:"Denmark",code:"DK"},{name:"Ecuador",code:"EC"},{name:"Egypt",code:"EG"},
-      {name:"El Salvador",code:"SV"},{name:"Estonia",code:"EE"},{name:"Finland",code:"FI"},
-      {name:"France",code:"FR"},{name:"Georgia",code:"GE"},{name:"Germany",code:"DE"},
-      {name:"Greece",code:"GR"},{name:"Guatemala",code:"GT"},{name:"Honduras",code:"HN"},
-      {name:"Hong Kong",code:"HK"},{name:"Hungary",code:"HU"},{name:"Iceland",code:"IS"},
-      {name:"India",code:"IN"},{name:"Indonesia",code:"ID"},{name:"Ireland",code:"IE"},
-      {name:"Israel",code:"IL"},{name:"Italy",code:"IT"},{name:"Japan",code:"JP"},
-      {name:"Jordan",code:"JO"},{name:"Kazakhstan",code:"KZ"},{name:"Kuwait",code:"KW"},
-      {name:"Latvia",code:"LV"},{name:"Lebanon",code:"LB"},{name:"Lithuania",code:"LT"},
-      {name:"Luxembourg",code:"LU"},{name:"Malaysia",code:"MY"},{name:"Malta",code:"MT"},
-      {name:"Mexico",code:"MX"},{name:"Moldova",code:"MD"},{name:"Monaco",code:"MC"},
-      {name:"Morocco",code:"MA"},{name:"Netherlands",code:"NL"},{name:"New Zealand",code:"NZ"},
-      {name:"Nicaragua",code:"NI"},{name:"North Macedonia",code:"MK"},{name:"Norway",code:"NO"},
-      {name:"Oman",code:"OM"},{name:"Pakistan",code:"PK"},{name:"Panama",code:"PA"},
-      {name:"Paraguay",code:"PY"},{name:"Peru",code:"PE"},{name:"Philippines",code:"PH"},
-      {name:"Poland",code:"PL"},{name:"Portugal",code:"PT"},{name:"Qatar",code:"QA"},
-      {name:"Romania",code:"RO"},{name:"Russia",code:"RU"},{name:"Saudi Arabia",code:"SA"},
-      {name:"Serbia",code:"RS"},{name:"Singapore",code:"SG"},{name:"Slovakia",code:"SK"},
-      {name:"Slovenia",code:"SI"},{name:"South Africa",code:"ZA"},{name:"South Korea",code:"KR"},
-      {name:"Spain",code:"ES"},{name:"Sri Lanka",code:"LK"},{name:"Sweden",code:"SE"},
-      {name:"Switzerland",code:"CH"},{name:"Taiwan",code:"TW"},{name:"Thailand",code:"TH"},
-      {name:"Turkey",code:"TR"},{name:"Ukraine",code:"UA"},{name:"United Arab Emirates",code:"AE"},
-      {name:"United Kingdom",code:"GB"},{name:"United States",code:"US"},{name:"Uruguay",code:"UY"},
-      {name:"Venezuela",code:"VE"},{name:"Vietnam",code:"VN"}
+    var COUNTRY_COUNTS = [
+      {name:"United States",code:"US",count:13557},
+      {name:"Mainland China",code:"CN",count:6820},
+      {name:"Japan",code:"JP",count:2989},
+      {name:"France",code:"FR",count:1589},
+      {name:"Canada",code:"CA",count:1489},
+      {name:"United Kingdom",code:"GB",count:1470},
+      {name:"Germany",code:"DE",count:1367},
+      {name:"Brazil",code:"BR",count:1173},
+      {name:"Australia",code:"AU",count:1068},
+      {name:"Philippines",code:"PH",count:792},
+      {name:"Italy",code:"IT",count:755},
+      {name:"India",code:"IN",count:665},
+      {name:"Spain",code:"ES",count:635},
+      {name:"Poland",code:"PL",count:580},
+      {name:"Saudi Arabia",code:"SA",count:441},
+      {name:"Taiwan",code:"TW",count:417},
+      {name:"South Africa",code:"ZA",count:401},
+      {name:"South Korea",code:"KR",count:398},
+      {name:"Mexico",code:"MX",count:374},
+      {name:"Malaysia",code:"MY",count:373},
+      {name:"Indonesia",code:"ID",count:318},
+      {name:"Turkey",code:"TR",count:274},
+      {name:"Netherlands",code:"NL",count:263},
+      {name:"Hong Kong",code:"HK",count:260},
+      {name:"Thailand",code:"TH",count:236},
+      {name:"Israel",code:"IL",count:230},
+      {name:"Argentina",code:"AR",count:226},
+      {name:"United Arab Emirates",code:"AE",count:210},
+      {name:"Portugal",code:"PT",count:209},
+      {name:"Austria",code:"AT",count:206},
+      {name:"Sweden",code:"SE",count:199},
+      {name:"Egypt",code:"EG",count:190},
+      {name:"Switzerland",code:"CH",count:184},
+      {name:"New Zealand",code:"NZ",count:172},
+      {name:"Singapore",code:"SG",count:152},
+      {name:"Czech Republic",code:"CZ",count:128},
+      {name:"Ukraine",code:"UA",count:124},
+      {name:"Belgium",code:"BE",count:119},
+      {name:"Guatemala",code:"GT",count:115},
+      {name:"Hungary",code:"HU",count:115},
+      {name:"Denmark",code:"DK",count:113},
+      {name:"Chile",code:"CL",count:112},
+      {name:"Romania",code:"RO",count:106},
+      {name:"Ireland",code:"IE",count:95},
+      {name:"Puerto Rico",code:"PR",count:94},
+      {name:"Kuwait",code:"KW",count:91},
+      {name:"Norway",code:"NO",count:85},
+      {name:"Finland",code:"FI",count:81},
+      {name:"Panama",code:"PA",count:81},
+      {name:"Venezuela",code:"VE",count:80},
+      {name:"Qatar",code:"QA",count:79},
+      {name:"Costa Rica",code:"CR",count:76},
+      {name:"Morocco",code:"MA",count:75},
+      {name:"Colombia",code:"CO",count:72},
+      {name:"Pakistan",code:"PK",count:69},
+      {name:"Croatia",code:"HR",count:47},
+      {name:"Slovakia",code:"SK",count:47},
+      {name:"Jordan",code:"JO",count:46},
+      {name:"Bulgaria",code:"BG",count:43},
+      {name:"Macau",code:"MO",count:39},
+      {name:"Vietnam",code:"VN",count:37},
+      {name:"Serbia",code:"RS",count:36},
+      {name:"Ecuador",code:"EC",count:35},
+      {name:"Greece",code:"GR",count:35},
+      {name:"Oman",code:"OM",count:35},
+      {name:"Uruguay",code:"UY",count:34},
+      {name:"Bahrain",code:"BH",count:33},
+      {name:"Peru",code:"PE",count:30},
+      {name:"Azerbaijan",code:"AZ",count:29},
+      {name:"Slovenia",code:"SI",count:28},
+      {name:"Paraguay",code:"PY",count:27},
+      {name:"El Salvador",code:"SV",count:25},
+      {name:"Georgia",code:"GE",count:25},
+      {name:"Cyprus",code:"CY",count:23},
+      {name:"Dominican Republic",code:"DO",count:23},
+      {name:"Lebanon",code:"LB",count:23},
+      {name:"Lithuania",code:"LT",count:18},
+      {name:"Reunion Island",code:"RE",count:18},
+      {name:"Mauritius",code:"MU",count:17},
+      {name:"Latvia",code:"LV",count:14},
+      {name:"Honduras",code:"HN",count:13},
+      {name:"Luxembourg",code:"LU",count:12},
+      {name:"Estonia",code:"EE",count:11},
+      {name:"Moldova",code:"MD",count:11},
+      {name:"Martinique",code:"MQ",count:10},
+      {name:"Guadeloupe",code:"GP",count:9},
+      {name:"Malta",code:"MT",count:9},
+      {name:"Nicaragua",code:"NI",count:9},
+      {name:"Guam",code:"GU",count:7},
+      {name:"Brunei",code:"BN",count:6},
+      {name:"Curacao",code:"CW",count:5},
+      {name:"Virgin Islands",code:"VI",count:5},
+      {name:"Tahiti (French Polynesia)",code:"PF",count:4},
+      {name:"Trinidad & Tobago",code:"TT",count:4},
+      {name:"Andorra",code:"AD",count:3},
+      {name:"Aruba",code:"AW",count:3},
+      {name:"Bahamas",code:"BS",count:3},
+      {name:"French Guiana",code:"GF",count:3},
+      {name:"Isle of Man",code:"IM",count:3},
+      {name:"Jersey",code:"JE",count:3},
+      {name:"New Caledonia",code:"NC",count:3},
+      {name:"St. Marten",code:"SX",count:3},
+      {name:"Saipan",code:"MP",count:2},
+      {name:"Suriname",code:"SR",count:2},
+      {name:"American Samoa",code:"AS",count:1},
+      {name:"Cuba",code:"CU",count:1},
+      {name:"Fiji",code:"FJ",count:1},
+      {name:"Gibraltar",code:"GI",count:1},
+      {name:"Liechtenstein",code:"LI",count:1},
+      {name:"Monaco",code:"MC",count:1},
+      {name:"Western Samoa",code:"WS",count:1}
     ];
 
     var LEVELS = [
@@ -199,6 +297,20 @@
       {label:"Fry Deity",icon:"🏆",min:51,max:111},
       {label:"Final Fry Boss",icon:"🌟",min:112,max:999}
     ];
+
+    function loadVisitDetails(){
+      try{
+        return JSON.parse(localStorage.getItem(VISIT_DETAILS_KEY)||"{}");
+      }catch(e){
+        return {};
+      }
+    }
+
+    function saveVisitDetails(data){
+      try{
+        localStorage.setItem(VISIT_DETAILS_KEY, JSON.stringify(data||{}));
+      }catch(e){}
+    }
 
     function getCurrentLevel(n){
       for(var i=LEVELS.length-1;i>=0;i--){
@@ -211,6 +323,28 @@
       if(!code || code.length!==2) return "";
       var c = code.toUpperCase();
       return String.fromCodePoint(c.charCodeAt(0)+127397) + String.fromCodePoint(c.charCodeAt(1)+127397);
+    }
+
+    function normalizeCountryName(name){
+      if(!name) return "";
+      var map = {
+        "China":"Mainland China",
+        "People's Republic of China":"Mainland China",
+        "Republic of Korea":"South Korea",
+        "Korea, South":"South Korea",
+        "South Korea":"South Korea",
+        "Korea":"South Korea",
+        "United States of America":"United States",
+        "U.S.A.":"United States",
+        "UK":"United Kingdom",
+        "Great Britain":"United Kingdom",
+        "Czechia":"Czech Republic",
+        "Macao":"Macau",
+        "UAE":"United Arab Emirates",
+        "Russian Federation":"Russia",
+        "Samoa":"Western Samoa"
+      };
+      return map[name] || name;
     }
 
     function uploadToCloudinary(file){
@@ -233,8 +367,18 @@
       });
     }
 
+    function isLikelyMcDonalds(el){
+      if(!el) return false;
+      var name = ((el.displayName && el.displayName.text) || el.name || "").toLowerCase();
+      var addr = (el.formattedAddress || "").toLowerCase();
+      if(name.indexOf("mcdonald") !== -1) return true;
+      if(addr.indexOf("mcdonald") !== -1) return true;
+      return false;
+    }
+
     function parseElement(el){
       if(!el || !el.location) return null;
+      if(!isLikelyMcDonalds(el)) return null;
 
       var lat = el.location.latitude;
       var lng = el.location.longitude;
@@ -251,12 +395,14 @@
         return "";
       }
 
+      var country = normalizeCountryName(fc("country") || "");
+
       return {
         id: el.id || ("place-" + lat + "-" + lng),
         name: (el.displayName && el.displayName.text) || "McDonald's",
         address: el.formattedAddress || "",
         city: fc("locality") || fc("postal_town") || fc("administrative_area_level_2") || "",
-        country: fc("country") || "",
+        country: country,
         countryCode: fc("country_code") || "",
         lat: lat,
         lng: lng,
@@ -370,27 +516,34 @@
       var sa=useState(null),authUser=sa[0],setAuthUser=sa[1];
       var sb2=useState(true),authLoading=sb2[0],setAuthLoading=sb2[1];
       var s=useState({}),checkins=s[0],setCheckins=s[1];
+      var sd=useState(loadVisitDetails()),visitDetails=sd[0],setVisitDetails=sd[1];
       var s2=useState([]),locations=s2[0],setLocations=s2[1];
       var s3=useState(false),loading=s3[0],setLoading=s3[1];
       var s4=useState(null),loadError=s4[0],setLoadError=s4[1];
       var s5=useState(null),userPos=s5[0],setUserPos=s5[1];
       var s6=useState("prompt"),geoStatus=s6[0],setGeoStatus=s6[1];
       var s7=useState("nearby"),view=s7[0],setView=s7[1];
-      var s8=useState(""),search=s8[0],setSearch=s8[1];
+      var s8=useState(""),addressSearch=s8[0],setAddressSearch=s8[1];
+      var sf=useState(""),filterText=sf[0],setFilterText=sf[1];
       var s9=useState(25),radius=s9[0],setRadius=s9[1];
       var s10=useState(null),toast=s10[0],setToast=s10[1];
       var s11=useState(null),celebrating=s11[0],setCelebrating=s11[1];
       var s12=useState(false),photoProcessing=s12[0],setPhotoProcessing=s12[1];
       var s13=useState(null),photoResult=s13[0],setPhotoResult=s13[1];
-      var s14=useState(null),checkinModal=s14[0],setCheckinModal=s14[1];
-      var s15=useState(null),checkinPhoto=s15[0],setCheckinPhoto=s15[1];
-      var s16=useState(null),checkinPhotoPreview=s16[0],setCheckinPhotoPreview=s16[1];
-      var s17=useState(false),checkinUploading=s17[0],setCheckinUploading=s17[1];
+      var s14=useState(null),visitModal=s14[0],setVisitModal=s14[1];
+      var s15=useState(null),visitPhoto=s15[0],setVisitPhoto=s15[1];
+      var s16=useState(null),visitPhotoPreview=s16[0],setVisitPhotoPreview=s16[1];
+      var s17=useState(false),visitUploading=s17[0],setVisitUploading=s17[1];
       var s18=useState(null),lightboxUrl=s18[0],setLightboxUrl=s18[1];
+      var s19=useState({rating:"",price_usd:"",notes:""}),visitForm=s19[0],setVisitForm=s19[1];
 
       var toastRef=useRef(null);
       var photoInputRef=useRef(null);
-      var checkinPhotoRef=useRef(null);
+      var visitPhotoRef=useRef(null);
+
+      useEffect(function(){
+        saveVisitDetails(visitDetails);
+      },[visitDetails]);
 
       useEffect(function(){
         sb.auth.getSession().then(function(res){
@@ -422,7 +575,7 @@
                 name:row.name,
                 city:row.city,
                 address:row.address,
-                country:row.country,
+                country:normalizeCountryName(row.country),
                 photo:row.photo_url||null
               };
             });
@@ -489,7 +642,7 @@
                 return Object.assign({},l,{dist:haversine(lat,lng,l.lat,l.lng)});
               })
               .sort(function(a,b){return a.dist-b.dist;})
-              .slice(0,5);
+              .slice(0,20);
 
             setLocations(locs);
             setLoading(false);
@@ -501,12 +654,12 @@
       }
 
       function handleAddressSearch(){
-        if(!search || !search.trim()) return;
+        if(!addressSearch || !addressSearch.trim()) return;
 
         setLoading(true);
         setLoadError(null);
 
-        fetch("/api/geocode?q="+encodeURIComponent(search.trim()))
+        fetch("/api/geocode?q="+encodeURIComponent(addressSearch.trim()))
           .then(function(r){
             return r.text().then(function(t){
               if(!r.ok) throw new Error(t||"Error");
@@ -531,15 +684,9 @@
         fetchLocations(userPos.lat,userPos.lng,radius);
       },[userPos,radius]);
 
-      var withDist=locations.map(function(l){
-        return Object.assign({},l,{dist:userPos?haversine(userPos.lat,userPos.lng,l.lat,l.lng):null});
-      }).sort(function(a,b){return (a.dist||9999)-(b.dist||9999);});
-
-      var filtered=withDist.filter(function(l){
-        if(!search) return true;
-        var q=search.toLowerCase();
-        return l.name.toLowerCase().indexOf(q)!==-1 || l.address.toLowerCase().indexOf(q)!==-1 || l.city.toLowerCase().indexOf(q)!==-1;
-      });
+      function getVisitDetail(placeId){
+        return visitDetails[placeId] || {rating:"",price_usd:"",notes:""};
+      }
 
       function showToast(msg,type){
         if(toastRef.current) clearTimeout(toastRef.current);
@@ -547,44 +694,58 @@
         toastRef.current=setTimeout(function(){setToast(null);},2800);
       }
 
-      function openCheckinModal(loc){
-        if(checkins[loc.id]){
-          sb.from("checkins").delete().eq("user_id",authUser.id).eq("place_id",loc.id).then(function(){
-            setCheckins(function(prev){
-              var n=Object.assign({},prev);
-              delete n[loc.id];
-              return n;
-            });
-            showToast("Removed check-in","remove");
-          });
-          return;
-        }
+      function openVisitModal(loc, forceNew){
+        var existingCheckin = checkins[loc.id];
+        var detail = getVisitDetail(loc.id);
 
-        setCheckinModal({loc:loc});
-        setCheckinPhoto(null);
-        setCheckinPhotoPreview(null);
-        setCheckinUploading(false);
+        setVisitModal({
+          loc:loc,
+          isEditing:!!existingCheckin && !forceNew
+        });
+
+        setVisitForm({
+          rating: detail.rating || "",
+          price_usd: detail.price_usd || "",
+          notes: detail.notes || ""
+        });
+
+        setVisitPhoto(null);
+        setVisitPhotoPreview(existingCheckin && existingCheckin.photo ? existingCheckin.photo : null);
+        setVisitUploading(false);
       }
 
-      function handleCheckinPhotoSelect(e){
+      function handleVisitPhotoSelect(e){
         var file=e.target.files&&e.target.files[0];
         if(!file) return;
-        setCheckinPhoto(file);
+        setVisitPhoto(file);
 
         var reader=new FileReader();
-        reader.onload=function(ev){setCheckinPhotoPreview(ev.target.result);};
+        reader.onload=function(ev){setVisitPhotoPreview(ev.target.result);};
         reader.readAsDataURL(file);
       }
 
-      function doCheckin(loc,photoUrl){
-        var now=new Date().toISOString();
+      function upsertVisitDetails(placeId, data){
+        setVisitDetails(function(prev){
+          var next = Object.assign({}, prev);
+          next[placeId] = {
+            rating: data.rating || "",
+            price_usd: data.price_usd || "",
+            notes: data.notes || ""
+          };
+          return next;
+        });
+      }
+
+      function saveCheckinRecord(loc, photoUrl){
+        var now = (checkins[loc.id] && checkins[loc.id].date) ? checkins[loc.id].date : new Date().toISOString();
+
         var row={
           user_id:authUser.id,
           place_id:loc.id,
           name:loc.name,
           city:loc.city,
           address:loc.address,
-          country:loc.country,
+          country:normalizeCountryName(loc.country),
           photo_url:photoUrl||null,
           checked_in_at:now
         };
@@ -598,39 +759,79 @@
             name:loc.name,
             city:loc.city,
             address:loc.address,
-            country:loc.country,
+            country:normalizeCountryName(loc.country),
             photo:photoUrl||null
           };
           return n;
         });
-
-        setCelebrating(loc.id);
-        setTimeout(function(){setCelebrating(null);},1200);
-        showToast("🍟 Had Fries here!");
       }
 
-      function confirmCheckin(skipPhoto){
-        var loc=checkinModal.loc;
+      function submitVisit(){
+        var loc = visitModal.loc;
+        var rating = String(visitForm.rating || "").trim();
+        var price = String(visitForm.price_usd || "").trim();
+        var notes = String(visitForm.notes || "").trim();
 
-        if(skipPhoto || !checkinPhoto){
-          doCheckin(loc,null);
-          setCheckinModal(null);
-          return;
+        if(rating){
+          var ratingNum = Number(rating);
+          if(isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5){
+            showToast("Rating must be between 1 and 5","remove");
+            return;
+          }
         }
 
-        setCheckinUploading(true);
-        uploadToCloudinary(checkinPhoto)
-          .then(function(url){
-            doCheckin(loc,url);
-            setCheckinUploading(false);
-            setCheckinModal(null);
-          })
-          .catch(function(){
-            doCheckin(loc,null);
-            setCheckinUploading(false);
-            setCheckinModal(null);
-            showToast("Checked in (photo failed)","remove");
+        if(price){
+          var priceNum = Number(price);
+          if(isNaN(priceNum) || priceNum < 0){
+            showToast("Price must be a positive number","remove");
+            return;
+          }
+        }
+
+        function finishSave(finalPhotoUrl){
+          saveCheckinRecord(loc, finalPhotoUrl);
+          upsertVisitDetails(loc.id, {
+            rating: rating,
+            price_usd: price,
+            notes: notes
           });
+          setCelebrating(loc.id);
+          setTimeout(function(){setCelebrating(null);},1200);
+          setVisitModal(null);
+          showToast(checkins[loc.id] ? "Visit updated" : "🍟 Had Fries here!");
+        }
+
+        if(visitPhoto){
+          setVisitUploading(true);
+          uploadToCloudinary(visitPhoto)
+            .then(function(url){
+              setVisitUploading(false);
+              finishSave(url);
+            })
+            .catch(function(){
+              setVisitUploading(false);
+              finishSave(checkins[loc.id] && checkins[loc.id].photo ? checkins[loc.id].photo : null);
+              showToast("Saved visit (photo upload failed)","remove");
+            });
+        }else{
+          finishSave(checkins[loc.id] && checkins[loc.id].photo ? checkins[loc.id].photo : null);
+        }
+      }
+
+      function deleteVisit(placeId){
+        sb.from("checkins").delete().eq("user_id",authUser.id).eq("place_id",placeId).then(function(){});
+        setCheckins(function(prev){
+          var n=Object.assign({},prev);
+          delete n[placeId];
+          return n;
+        });
+        setVisitDetails(function(prev){
+          var n=Object.assign({},prev);
+          delete n[placeId];
+          return n;
+        });
+        setVisitModal(null);
+        showToast("Removed visit","remove");
       }
 
       function handlePhotoUpload(e){
@@ -682,35 +883,31 @@
 
       function confirmPhotoCheckin(loc,file){
         setPhotoResult(null);
-
-        if(checkins[loc.id]){
-          showToast("Already checked in here");
-          return;
-        }
+        openVisitModal(loc, true);
 
         if(file){
-          setCheckinUploading(true);
-          uploadToCloudinary(file)
-            .then(function(url){
-              doCheckin(loc,url);
-              setCheckinUploading(false);
-              showToast("📸 Photo check-in: "+loc.name+"!");
-            })
-            .catch(function(){
-              doCheckin(loc,null);
-              setCheckinUploading(false);
-              showToast("📸 Checked in (photo failed)");
-            });
-        } else {
-          doCheckin(loc,null);
-          showToast("📸 Photo check-in: "+loc.name+"!");
+          setVisitPhoto(file);
+          var reader=new FileReader();
+          reader.onload=function(ev){setVisitPhotoPreview(ev.target.result);};
+          reader.readAsDataURL(file);
         }
       }
 
+      var withDist=locations.map(function(l){
+        return Object.assign({},l,{dist:userPos?haversine(userPos.lat,userPos.lng,l.lat,l.lng):null});
+      }).sort(function(a,b){return (a.dist||9999)-(b.dist||9999);});
+
+      var filtered=withDist.filter(function(l){
+        if(!filterText) return true;
+        var q=filterText.toLowerCase();
+        return l.name.toLowerCase().indexOf(q)!==-1 || l.address.toLowerCase().indexOf(q)!==-1 || l.city.toLowerCase().indexOf(q)!==-1 || l.country.toLowerCase().indexOf(q)!==-1;
+      });
+
       var totalCheckins=Object.keys(checkins).length;
-      var currentLevelIdx=getCurrentLevel(totalCheckins);
+      var visitedCountries=new Set(Object.values(checkins).map(function(c){return normalizeCountryName(c.country);}).filter(Boolean));
+      var totalCountriesVisited=visitedCountries.size;
+      var currentLevelIdx=getCurrentLevel(totalCountriesVisited);
       var currentLevel=LEVELS[currentLevelIdx];
-      var visitedCountries=new Set(Object.values(checkins).map(function(c){return c.country;}).filter(Boolean));
 
       if(authLoading){
         return h("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"100vh",background:"#FFC72C"}},
@@ -801,7 +998,7 @@
           h("div",{className:"hf-geo-card"},
             h("div",{className:"hf-geo-icon"},"🍟"),
             h("div",{className:"hf-geo-title"},"Find McDonald's Near You"),
-            h("div",{className:"hf-geo-desc"},"Tap below to find nearby locations."),
+            h("div",{className:"hf-geo-desc"},"Tap below to find nearby locations, or search any address below once location mode is active."),
             h("button",{className:"hf-btn-red",onClick:requestGeo},"📍 Use My Location")
           )
         ),
@@ -824,12 +1021,18 @@
           h("div",{className:"hf-controls-inner"},
             h("input",{
               className:"hf-search",
-              placeholder:"Search address or filter...",
-              value:search,
-              onChange:function(e){setSearch(e.target.value);},
+              placeholder:"Enter address, city, or hotel name...",
+              value:addressSearch,
+              onChange:function(e){setAddressSearch(e.target.value);},
               onKeyDown:function(e){if(e.key==="Enter") handleAddressSearch();}
             }),
-            h("button",{className:"hf-btn-red",onClick:handleAddressSearch},"Search"),
+            h("button",{className:"hf-btn-red",onClick:handleAddressSearch},"Search Address"),
+            h("input",{
+              className:"hf-search",
+              placeholder:"Filter current results...",
+              value:filterText,
+              onChange:function(e){setFilterText(e.target.value);}
+            }),
             view==="nearby" && h("select",{className:"hf-select",value:radius,onChange:function(e){setRadius(Number(e.target.value));}},
               [5,10,25,50,100].map(function(r){return h("option",{key:r,value:r},r+" mi");})
             ),
@@ -840,17 +1043,21 @@
           )
         ),
 
+        geoStatus==="ok" && (view==="nearby"||view==="all") && h("div",{className:"hf-section-note"},
+          "Address search moves the map center. Filter only narrows the currently loaded McDonald's results."
+        ),
+
         photoProcessing && h("div",{className:"hf-loading",style:{marginTop:20}},
           h("div",{className:"hf-spinner"}),
           h("div",{className:"hf-loading-txt"},"📸 Reading photo location...")
         ),
 
-        checkinUploading && h("div",{className:"hf-loading",style:{marginTop:20}},
+        visitUploading && h("div",{className:"hf-loading",style:{marginTop:20}},
           h("div",{className:"hf-spinner"}),
           h("div",{className:"hf-loading-txt"},"Uploading photo...")
         ),
 
-        photoResult && !checkinUploading && h("div",{className:"hf-modal-overlay",onClick:function(){setPhotoResult(null);}},
+        photoResult && !visitUploading && h("div",{className:"hf-modal-overlay",onClick:function(){setPhotoResult(null);}},
           h("div",{className:"hf-modal",onClick:function(e){e.stopPropagation();}},
             photoResult.error
               ? h(React.Fragment,null,
@@ -868,56 +1075,85 @@
                     h("div",{className:"hf-modal-loc-addr"},[photoResult.loc.address,photoResult.loc.city].filter(Boolean).join(" · ")||"McDonald's location"),
                     h("div",{className:"hf-modal-loc-dist"},"📍 "+fmtDist(photoResult.loc.dist)+" from photo GPS")
                   ),
-                  checkins[photoResult.loc.id]
-                    ? h(React.Fragment,null,
-                        h("div",{style:{color:"#DA0023",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",marginBottom:14}},"🍟 Already checked in!"),
-                        h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Close")
-                      )
-                    : h("div",{className:"hf-modal-btns"},
-                        h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Cancel"),
-                        h("button",{className:"hf-btn-red",onClick:function(){confirmPhotoCheckin(photoResult.loc,photoResult.file);}},"✓ Check In + Save Photo!")
-                      )
+                  h("div",{className:"hf-modal-btns"},
+                    h("button",{className:"hf-btn-ghost",onClick:function(){setPhotoResult(null);}},"Cancel"),
+                    h("button",{className:"hf-btn-red",onClick:function(){confirmPhotoCheckin(photoResult.loc,photoResult.file);}},"Continue")
+                  )
                 )
           )
         ),
 
-        checkinModal && !checkinUploading && h("div",{className:"hf-modal-overlay",onClick:function(){setCheckinModal(null);}},
+        visitModal && !visitUploading && h("div",{className:"hf-modal-overlay",onClick:function(){setVisitModal(null);}},
           h("div",{className:"hf-modal",onClick:function(e){e.stopPropagation();}},
-            h("div",{className:"hf-modal-icon"},"📍"),
-            h("div",{className:"hf-modal-title"},"Had Fries Here!"),
+            h("div",{className:"hf-modal-icon"}, visitModal.isEditing ? "✏️" : "🍟"),
+            h("div",{className:"hf-modal-title"}, visitModal.isEditing ? "Edit Visit" : "Log Visit"),
             h("div",{className:"hf-modal-loc"},
-              h("div",{className:"hf-modal-loc-name"},checkinModal.loc.name),
-              h("div",{className:"hf-modal-loc-addr"},[checkinModal.loc.address,checkinModal.loc.city].filter(Boolean).join(" · ")||"McDonald's location")
+              h("div",{className:"hf-modal-loc-name"},visitModal.loc.name),
+              h("div",{className:"hf-modal-loc-addr"},[visitModal.loc.address,visitModal.loc.city,visitModal.loc.country].filter(Boolean).join(" · ")||"McDonald's location")
             ),
-            h("div",{className:"hf-modal-desc",style:{marginBottom:12}},"Add a photo to remember this visit!"),
 
-            checkinPhotoPreview
+            h("div",{className:"hf-form-grid"},
+              h("div",null,
+                h("label",{className:"hf-field-label"},"Rating (1-5)"),
+                h("input",{
+                  className:"hf-input",
+                  type:"number",
+                  min:"1",
+                  max:"5",
+                  step:"1",
+                  value:visitForm.rating,
+                  onChange:function(e){setVisitForm(Object.assign({}, visitForm, {rating:e.target.value}));},
+                  placeholder:"5"
+                })
+              ),
+              h("div",null,
+                h("label",{className:"hf-field-label"},"Large Fry Price (USD)"),
+                h("input",{
+                  className:"hf-input",
+                  type:"number",
+                  min:"0",
+                  step:"0.01",
+                  value:visitForm.price_usd,
+                  onChange:function(e){setVisitForm(Object.assign({}, visitForm, {price_usd:e.target.value}));},
+                  placeholder:"3.99"
+                })
+              )
+            ),
+
+            h("div",{style:{marginBottom:14,textAlign:"left"}},
+              h("label",{className:"hf-field-label"},"Notes"),
+              h("textarea",{
+                className:"hf-textarea",
+                value:visitForm.notes,
+                onChange:function(e){setVisitForm(Object.assign({}, visitForm, {notes:e.target.value}));},
+                placeholder:"Best fries of the trip? Extra salty? Weird sauce? Anything memorable..."
+              })
+            ),
+
+            visitPhotoPreview
               ? h(React.Fragment,null,
-                  h("img",{className:"hf-photo-preview",src:checkinPhotoPreview,alt:"preview"}),
+                  h("img",{className:"hf-photo-preview",src:visitPhotoPreview,alt:"preview"}),
                   h("button",{
                     style:{fontSize:"0.72rem",color:"#888",background:"none",border:"none",cursor:"pointer",marginBottom:12},
-                    onClick:function(){setCheckinPhoto(null);setCheckinPhotoPreview(null);}
+                    onClick:function(){setVisitPhoto(null);setVisitPhotoPreview(null);}
                   },"✕ Remove photo")
                 )
-              : h("div",{className:"hf-photo-upload-area",onClick:function(){if(checkinPhotoRef.current) checkinPhotoRef.current.click();}},
+              : h("div",{className:"hf-photo-upload-area",onClick:function(){if(visitPhotoRef.current) visitPhotoRef.current.click();}},
                   h("div",{style:{fontSize:"2rem",marginBottom:6}},"📷"),
                   h("div",{style:{fontSize:"0.82rem",fontWeight:700,color:"#555"}},"Tap to add a photo"),
-                  h("div",{style:{fontSize:"0.72rem",color:"#aaa",marginTop:4}},"Optional — you can skip")
+                  h("div",{style:{fontSize:"0.72rem",color:"#aaa",marginTop:4}},"Optional")
                 ),
 
-            h("input",{ref:checkinPhotoRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handleCheckinPhotoSelect}),
+            h("input",{ref:visitPhotoRef,type:"file",accept:"image/*",style:{display:"none"},onChange:handleVisitPhotoSelect}),
 
             h("div",{className:"hf-modal-btns"},
-              h("button",{className:"hf-btn-ghost",onClick:function(){setCheckinModal(null);}},"Cancel"),
-              checkinPhotoPreview
-                ? h("button",{className:"hf-btn-red",onClick:function(){confirmCheckin(false);}},"✓ Check In + Upload Photo!")
-                : h(React.Fragment,null,
-                    h("button",{
-                      style:{background:"#27251F",color:"#FFC72C",border:"3px solid #27251F",borderRadius:10,padding:"10px 16px",fontFamily:"'Archivo Black',sans-serif",fontSize:"0.78rem",cursor:"pointer"},
-                      onClick:function(){if(checkinPhotoRef.current) checkinPhotoRef.current.click();}
-                    },"Add Photo"),
-                    h("button",{className:"hf-btn-red",onClick:function(){confirmCheckin(true);}},"Skip & Check In")
-                  )
+              h("button",{className:"hf-btn-ghost",onClick:function(){setVisitModal(null);}},"Cancel"),
+              h("button",{className:"hf-btn-dark",onClick:function(){if(visitPhotoRef.current) visitPhotoRef.current.click();}},"Add / Change Photo"),
+              h("button",{className:"hf-btn-red",onClick:submitVisit}, visitModal.isEditing ? "Save Changes" : "Check In")
+            ),
+
+            visitModal.isEditing && h("div",{style:{marginTop:12}},
+              h("button",{className:"hf-btn-danger",onClick:function(){deleteVisit(visitModal.loc.id);}},"Delete Visit")
             )
           )
         ),
@@ -937,12 +1173,13 @@
         ),
 
         view==="nearby" && geoStatus==="ok" && !loading && !loadError && h(React.Fragment,null,
-          filtered.length>0 && h("div",{className:"hf-result-count"},"Showing "+filtered.length+" closest location"+(filtered.length!==1?"s":"")),
+          filtered.length>0 && h("div",{className:"hf-result-count"},"Showing "+filtered.length+" nearby McDonald's"),
           h("div",{className:"hf-grid"},
             filtered.length===0
               ? h("div",{className:"hf-empty"},"No locations found nearby 🍟")
               : filtered.map(function(loc){
                   var isChecked=!!checkins[loc.id];
+                  var detail = getVisitDetail(loc.id);
                   return h("div",{key:loc.id,className:"hf-card"+(isChecked?" checked":"")+(celebrating===loc.id?" celebrating":"")},
                     isChecked && h("div",{className:"hf-stamp"},"🍟"),
                     h("div",{className:"hf-card-top"},
@@ -956,10 +1193,11 @@
                     h("div",{className:"hf-card-bottom"},
                       h("div",{className:"hf-card-meta"},
                         loc.city && h("div",null,loc.city),
+                        isChecked && detail.rating && h("div",{style:{color:"#DA0023"}},"⭐ "+detail.rating+"/5"),
                         isChecked && checkins[loc.id] && checkins[loc.id].photo && h("div",{style:{color:"#4ade80",fontSize:"0.67rem"}},"📷 Photo saved")
                       ),
-                      h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),onClick:function(){openCheckinModal(loc);}},
-                        isChecked ? "✓ Had Fries!" : "Had Fries?"
+                      h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),onClick:function(){openVisitModal(loc);}},
+                        isChecked ? "Edit Visit" : "Had Fries?"
                       )
                     )
                   );
@@ -976,11 +1214,11 @@
                   h(ArchesOutline,{width:22}),
                   h("div",{style:{flex:1,overflow:"hidden"}},
                     h("div",{className:"hf-list-name"},loc.name+(isChecked?" 🍟":"")),
-                    h("div",{className:"hf-list-sub"},[loc.address,loc.city].filter(Boolean).join(" · ")||"McDonald's")
+                    h("div",{className:"hf-list-sub"},[loc.address,loc.city,loc.country].filter(Boolean).join(" · ")||"McDonald's")
                   ),
                   loc.dist!==null && h("div",{style:{fontSize:"0.7rem",fontWeight:700,color:"#DA0023",whiteSpace:"nowrap"}},fmtDist(loc.dist)),
-                  h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),style:{fontSize:"0.68rem",padding:"6px 11px"},onClick:function(){openCheckinModal(loc);}},
-                    isChecked ? "✓ Done" : "+ Check In"
+                  h("button",{className:"hf-checkin-btn "+(isChecked?"yes":"no"),style:{fontSize:"0.68rem",padding:"6px 11px"},onClick:function(){openVisitModal(loc);}},
+                    isChecked ? "Edit" : "+ Check In"
                   )
                 );
               })
@@ -991,22 +1229,22 @@
             h("div",{style:{fontSize:"0.75rem",color:"rgba(255,255,255,0.7)",fontWeight:700,letterSpacing:2,textTransform:"uppercase",marginBottom:4}},
               authUser.user_metadata&&authUser.user_metadata.full_name ? authUser.user_metadata.full_name+"'s Stats" : "Your Stats"
             ),
-            h("div",{className:"hf-stats-big"},totalCheckins),
-            h("div",{className:"hf-stats-tag"},totalCheckins===0?"Go get some fries!":totalCheckins===1?"Location conquered":"Locations conquered"),
+            h("div",{className:"hf-stats-big"},totalCountriesVisited),
+            h("div",{className:"hf-stats-tag"},totalCountriesVisited===0?"Go get some fries!":(totalCountriesVisited===1?"Country conquered":"Countries conquered")),
             h("div",{className:"hf-stats-rank"},h("span",{className:"hf-rank-chip"},currentLevel.icon+" "+currentLevel.label))
           ),
 
           h("div",{className:"hf-progress-wrap"},
-            h("div",{className:"hf-progress-title"},"🏆 Level Progress"),
+            h("div",{className:"hf-progress-title"},"🏆 Country Level Progress"),
             LEVELS.map(function(lvl,idx){
-              var done=totalCheckins>lvl.max && lvl.max!==999;
+              var done=totalCountriesVisited>lvl.max && lvl.max!==999;
               var current=idx===currentLevelIdx;
               var pct=0;
 
               if(done) pct=100;
               else if(current){
-                if(lvl.max===999) pct=Math.min(100,Math.round((totalCheckins-lvl.min)/10*100));
-                else pct=Math.round((totalCheckins-lvl.min)/(lvl.max-lvl.min+1)*100);
+                if(lvl.max===999) pct=Math.min(100,Math.round((totalCountriesVisited-lvl.min)/10*100));
+                else pct=Math.round((totalCountriesVisited-lvl.min)/(lvl.max-lvl.min+1)*100);
               }
 
               var rangeLabel=lvl.max===999 ? "112+" : (lvl.min===0 ? "0" : lvl.min+"-"+lvl.max);
@@ -1016,7 +1254,7 @@
                 h("div",{className:"hf-level-info"},
                   h("div",{className:"hf-level-name"},lvl.label),
                   h("div",{className:"hf-level-range"},
-                    rangeLabel+" check-ins"+(current ? " • "+totalCheckins+(lvl.max!==999 ? " / "+lvl.max : " check-ins so far!") : "")
+                    rangeLabel+" countries"+(current ? " • "+totalCountriesVisited+(lvl.max!==999 ? " / "+lvl.max : " countries so far!") : "")
                   ),
                   h("div",{className:"hf-level-bar-bg"},
                     h("div",{className:"hf-level-bar-fill",style:{width:pct+"%"}})
@@ -1029,8 +1267,8 @@
 
           h("div",{className:"hf-sgrid"},
             [
+              {val:totalCountriesVisited,lbl:"Countries"},
               {val:totalCheckins,lbl:"Check-ins"},
-              {val:visitedCountries.size,lbl:"Countries"},
               {val:totalCheckins>0?Math.round((Date.now()-new Date(Object.values(checkins).sort(function(a,b){return new Date(a.date)-new Date(b.date);})[0].date).getTime())/86400000):0,lbl:"Days Active"},
               {val:currentLevel.icon,lbl:currentLevel.label}
             ].map(function(sv){
@@ -1045,9 +1283,12 @@
             ? h(React.Fragment,null,
                 h("div",{className:"hf-trail-title"},"🍟 Your Fry Trail"),
                 h("div",{className:"hf-trail"},
-                  Object.entries(checkins).slice().reverse().map(function(entry){
+                  Object.entries(checkins).slice().sort(function(a,b){
+                    return new Date(b[1].date) - new Date(a[1].date);
+                  }).map(function(entry){
                     var id=entry[0],c=entry[1];
-                    var countryObj=MCDONALDS_COUNTRIES.find(function(x){return x.name===c.country;});
+                    var detail = getVisitDetail(id);
+                    var countryObj=COUNTRY_COUNTS.find(function(x){return x.name===normalizeCountryName(c.country);});
                     var flag=countryObj?countryFlag(countryObj.code):"";
 
                     return h("div",{key:id,className:"hf-trail-row"},
@@ -1057,7 +1298,13 @@
                       h("div",{className:"hf-trail-info"},
                         h("div",{className:"hf-trail-name"},c.name||"McDonald's"),
                         h("div",{className:"hf-trail-loc"},[c.address,c.city].filter(Boolean).join(" · ")||"—"),
-                        c.country && h("div",{className:"hf-trail-country"},flag ? (flag+" "+c.country) : c.country)
+                        c.country && h("div",{className:"hf-trail-country"},flag ? (flag+" "+normalizeCountryName(c.country)) : normalizeCountryName(c.country)),
+                        h("div",{className:"hf-trail-extra"},
+                          (detail.rating ? "⭐ "+detail.rating+"/5" : ""),
+                          (detail.rating && detail.price_usd ? " · " : ""),
+                          (detail.price_usd ? "💵 $" + Number(detail.price_usd).toFixed(2) : "")
+                        ),
+                        detail.notes ? h("div",{className:"hf-trail-notes"},detail.notes) : null
                       ),
                       h("div",{className:"hf-trail-date"},new Date(c.date).toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}))
                     );
@@ -1071,21 +1318,22 @@
               ),
 
           h("div",{style:{marginTop:24,padding:"12px 16px",background:"rgba(0,0,0,0.08)",borderRadius:8,fontSize:"0.62rem",color:"rgba(39,37,31,0.55)",fontWeight:600,lineHeight:1.6,textAlign:"center"}},
-            "Had Fries is an unofficial personal family app not affiliated with McDonald's Corporation. The McDonald's name and Golden Arches are registered trademarks of McDonald's Corporation."
+            "Levels are based on countries visited. Check-ins remain separate. Visit ratings, price, and notes are stored locally in this browser."
           )
         ),
 
         view==="world" && h("div",{style:{maxWidth:900,margin:"0 auto",padding:"16px"}},
           h("div",{style:{fontFamily:"'Archivo Black',sans-serif",fontSize:"0.85rem",letterSpacing:2,textTransform:"uppercase",marginBottom:4}},"🌍 McDonald's Countries"),
           h("div",{style:{fontSize:"0.75rem",color:"#27251F",opacity:0.6,fontWeight:700,marginBottom:12}},
-            visitedCountries.size+" of "+MCDONALDS_COUNTRIES.length+" countries visited"
+            totalCountriesVisited+" of "+COUNTRY_COUNTS.length+" countries / territories visited"
           ),
           h("div",{className:"hf-countries-grid"},
-            MCDONALDS_COUNTRIES.map(function(c){
+            COUNTRY_COUNTS.map(function(c){
               var visited=visitedCountries.has(c.name);
-              return h("div",{key:c.code,className:"hf-country-row"+(visited?" visited":"")},
+              return h("div",{key:c.code+"-"+c.name,className:"hf-country-row"+(visited?" visited":"")},
                 h("div",{className:"hf-country-flag"},countryFlag(c.code)),
                 h("div",{className:"hf-country-name"},c.name),
+                h("div",{className:"hf-country-count"},c.count),
                 visited && h("div",{className:"hf-country-check"},"🍟")
               );
             })
